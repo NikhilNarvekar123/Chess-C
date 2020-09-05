@@ -2,11 +2,56 @@
 //
 
 #include <iostream>
+#include <string>
+
+using namespace std;
+
+const string board = "| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n";
+string curBoard[64] = {};
+
+void twoPlayer() {
+	cout << board;
+
+}
+
+void fillBoard() {
+
+}
+
+
 
 int main()
 {
-    std::cout << "hd";
-    std::cout << "Hello World!\n";
+	cout << "Welcome to Chess-C! Choose an option below:" << endl;
+	cout << "a. 2-player" << endl;
+	cout << "b. 1-player (n/a at the time!)" << endl;
+	cout << "c. 0-player (n/a at the time!)" << endl << endl;
+	
+	string userIn;
+	bool valid = false;
+	
+	while (!valid) {
+		cin >> userIn;
+		char c = tolower(userIn.at(0));
+		if (userIn.size() == 1 && (c == 'a' || c == 'b' || c == 'c')) {
+			cout << "Starting option " << c << " chosen!\n" << endl;
+			userIn = c;
+			valid = true;
+		}
+		else {
+			cout << "invalid input entered! try again." << endl;
+		}
+	}
+	
+	if (userIn == "a") {
+		twoPlayer();
+	}
+
+
+	return 0;
+	
+
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
