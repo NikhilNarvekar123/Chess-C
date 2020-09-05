@@ -6,17 +6,81 @@
 
 using namespace std;
 
-const string board = "| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n| | | | | | | | |\n";
-string curBoard[64] = {};
+string curBoard[8][8] = { {"rb","hb","bb","kb","qb","bb","hb","rb"},
+						{"pb","pb","pb","pb","pb","pb","pb","pb"}, 
+						{"  ","  ","  ","  ","  ","  ","  ","  "},
+						{"  ","  ","  ","  ","  ","  ","  ","  "},
+						{"  ","  ","  ","  ","  ","  ","  ","  "},
+						{"  ","  ","  ","  ","  ","  ","  ","  "},
+						{"pw","pw","pw","pw","pw","pw","pw","pw"},
+						{"rw","hw","bw","kw","qw","bw","hw","rw"} };
 
-void twoPlayer() {
-	cout << board;
-
-}
+const string boardLabelsY[8] = { "8", "7", "6", "5", "4", "3", "2", "1" };
+const string boardLabelsX[8] = { "A","B", "C", "D", "E", "F","G","H" };
 
 void fillBoard() {
+	cout << "";
+	for (int i = 0; i < 8; i++) {
+		printf("%6s", boardLabelsX[i].c_str());
+	}
+	cout << endl;
+	for (int r = 0; r < 8; r++) {
+		cout << boardLabelsY[r] << " ";
+		for (int c = 0; c < 8; c++) {
+			cout << "| " << curBoard[r][c] << " |";
+		}
+		cout << endl << endl;
+	}
+}
+
+void modifyBoard(string piece, string square) {
 
 }
+
+string actionCheck() {
+	return "";
+}
+
+void twoPlayer() {
+	
+	fillBoard();
+
+	string userIn;
+	string piece;
+	string square;
+	string result;
+
+	cout << "welcome to 2-player chess! enter input as shown: piecename, square" << endl;
+	while (userIn != "exit") {
+
+		cout << "Player1, enter piece to move and square to move it to." << endl;
+		cin >> piece >> square;
+		//input validation
+		cout << "Player1, you have decided to move " << piece << " to " << square << endl;
+		//move validation
+		modifyBoard(piece, square);
+		fillBoard();
+
+		//capture/win validation
+		result = actionCheck();
+
+		cout << "Player2, enter piece to move and square to move it to." << endl;
+		cin >> piece >> square;
+		//input validation
+		cout << "Player2, you have decided to move " << piece << " to " << square << endl;
+		//move validation
+		modifyBoard(piece, square);
+		fillBoard();
+		
+		//capture/win validation
+		result = actionCheck();
+	}
+
+
+
+}
+
+
 
 
 
