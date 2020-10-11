@@ -6,42 +6,13 @@
 
 using namespace std;
 
-string curBoard[8][8] = { {"rb","hb","bb","kb","qb","bb","hb","rb"},
-						{"pb","pb","pb","pb","pb","pb","pb","pb"}, 
-						{"  ","  ","  ","  ","  ","  ","  ","  "},
-						{"  ","  ","  ","  ","  ","  ","  ","  "},
-						{"  ","  ","  ","  ","  ","  ","  ","  "},
-						{"  ","  ","  ","  ","  ","  ","  ","  "},
-						{"pw","pw","pw","pw","pw","pw","pw","pw"},
-						{"rw","hw","bw","kw","qw","bw","hw","rw"} };
 
-const string boardLabelsY[8] = { "8", "7", "6", "5", "4", "3", "2", "1" };
-const string boardLabelsX[8] = { "A","B", "C", "D", "E", "F","G","H" };
-
-void fillBoard() {
-	cout << "";
-	for (int i = 0; i < 8; i++) {
-		printf("%6s", boardLabelsX[i].c_str());
-	}
-	cout << endl;
-	for (int r = 0; r < 8; r++) {
-		cout << boardLabelsY[r] << " ";
-		for (int c = 0; c < 8; c++) {
-			cout << "| " << curBoard[r][c] << " |";
-		}
-		cout << endl << endl;
-	}
-}
-
-void modifyBoard(string piece, string square) {
-
-}
 
 string actionCheck() {
 	return "";
 }
 
-void twoPlayer() {
+void twoPlayer() 
 	
 	fillBoard();
 
