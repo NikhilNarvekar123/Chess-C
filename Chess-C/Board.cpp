@@ -1,6 +1,5 @@
 #include "Board.h"
 
-using namespace std;
 
 Board::Board() {
 	Board::curBoard = { {"rb","hb","bb","kb","qb","bb","hb","rb"},
@@ -38,14 +37,29 @@ int Board::movePiece(string startPosition, string endPosition) {
 		return -1;
 
 	string startPiece = Board::curBoard[startPoint.row][startPoint.col];
-	Board::pieceToMove = findPieceType(startPiece);
-	if (pieceToMove == Pieces::EMPTY)
-		return -1;
+	Piece pieceToMove(findPieceType(startPiece));
 	string endPiece = Board::curBoard[endPoint.row][endPoint.col];
-	Board::pieceToTake = findPieceType(endPiece);
+	Piece pieceToTake(findPieceType(endPiece));
 
+	bool validMove = pieceToMove.processMove(startPoint, endPoint);
+	if (!validMove) {
+		return -1;
+	}
+	else if (pieceToTake.returnPiece() == Pieces::EMPTY) {
+		Board::curBoard[endPoint.row][endPoint.col] = startPiece;
+		Board::curBoard[startPoint.row][endPoint.col] = "  ";
+		cout << pieceToMove.returnName() << "moved" << endl;
+		return 0;
+	}
+	else if (pieceToTake.returnPiece() != Pieces::EMPTY) {
+		Board::curBoard[endPoint.row][endPoint.col] = startPiece;
+		Board::curBoard[startPoint.row][endPoint.col] = "  ";
+		cout << pieceToMove.returnName() << " moved\n" << endl;
+		cout << pieceToTake.returnName() << " was taken!\n" << endl;
+		return 1;
+	}
 
-
+	return -1;
 
 }
 
@@ -54,12 +68,15 @@ Point Board::translateInput(string input) {
 	
 	int tempRow;
 	int tempCol;
+	
 
 	for (int i = 0; i < 8; i++) {
+		cout << i << input.substr(0,1);
 		if (input.substr(0, 1) == boardLabelsX[i])
-			tempCol = stoi(boardLabelsX[i]);
+			tempCol = i;
 		if (input.substr(1, 1) == boardLabelsY[i])
-			tempRow = stoi(boardLabelsY[i]);
+			tempRow = i;
+		
 	}
 	
 	Point p;

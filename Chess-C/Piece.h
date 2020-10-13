@@ -1,19 +1,18 @@
 #pragma once
 #include "Pieces.h";
 #include <iostream>
+#include <string>
 
-struct Point {
-	int row;
-	int col;
-	bool valid = true;
-};
+
+using namespace std;
 
 class Piece {
 
 public:
 	Piece(Pieces piece);
 	bool processMove(Point startPoint, Point endPoint);
-
+	string returnName();
+	Pieces returnPiece();
 
 private:
 	Pieces pieceToMove;

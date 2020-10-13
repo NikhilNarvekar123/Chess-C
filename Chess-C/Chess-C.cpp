@@ -3,48 +3,75 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <regex>
+#include "Board.h"
+
 
 using namespace std;
 
-
-
-string actionCheck() {
-	return "";
+bool inputValidifier(string input) {
+	regex format("[A-Z][1-8]");
+	regex format2("[a-z][1-8]");
+	if (regex_match(input, format) || regex_match(input, format))
+		return true;
+	else
+		return false;
 }
 
-void twoPlayer() 
+void actionCheck(string& input) {
+	bool isValid = inputValidifier(input);
 	
-	fillBoard();
+	while (!isValid) {
+		cout << "Incorrect input was entered. Make sure to follow the format \"A1\" " << endl;
+		cin >> input;
+		isValid = inputValidifier(input);
+	}
+}
+
+
+void twoPlayer() {
+
+	Board board;
 
 	string userIn;
-	string piece;
-	string square;
+	string startSquare;
+	string endSquare;
 	string result;
 
-	cout << "welcome to 2-player chess! enter input as shown: piecename, square" << endl;
+
+	cout << "welcome to 2-player chess! enter input as shown: squareToStart squareToEnd" << endl;
+	cout << "for example, to move the piece at A1 to B2, you would type:\n";
+	cout << "A1 B2" << endl;
+	board.initialize();
+
 	while (userIn != "exit") {
 
-		cout << "Player1, enter piece to move and square to move it to." << endl;
-		cin >> piece >> square;
-		//input validation
-		cout << "Player1, you have decided to move " << piece << " to " << square << endl;
-		//move validation
-		modifyBoard(piece, square);
-		fillBoard();
-
-		//capture/win validation
-		result = actionCheck();
-
-		cout << "Player2, enter piece to move and square to move it to." << endl;
-		cin >> piece >> square;
-		//input validation
-		cout << "Player2, you have decided to move " << piece << " to " << square << endl;
-		//move validation
-		modifyBoard(piece, square);
-		fillBoard();
+		cout << "Player1, enter square with piece you are going to move." << endl;
+		cin >> startSquare;
+		actionCheck(startSquare);
+		cout << "Player1, enter square piece will be moved to." << endl;
+		cin >> endSquare;
+		actionCheck(endSquare);
 		
-		//capture/win validation
-		result = actionCheck();
+		cout << "Player1, you have decided to move " << startSquare << " to " << endSquare << endl;
+		board.movePiece(startSquare, endSquare);
+		board.initialize();
+			
+		// add logic to check if game is over 
+
+		cout << "Player2, enter square with piece you are going to move." << endl;
+		cin >> startSquare;
+		actionCheck(startSquare);
+		cout << "Player2, enter square piece will be moved to." << endl;
+		cin >> endSquare;
+		actionCheck(endSquare);
+
+		cout << "Player2, you have decided to move " << startSquare << " to " << endSquare << endl;
+		board.movePiece(startSquare, endSquare);
+		board.initialize();
+
+		// add logic to check if game is over
 	}
 
 
@@ -88,14 +115,3 @@ int main()
 
 
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

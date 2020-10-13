@@ -1,15 +1,52 @@
 #pragma once
 #include "Piece.h";
 
-using namespace std;
 
 Piece::Piece(Pieces piece) {
 	Piece::pieceToMove = piece;
 }
 
+string Piece::returnName() {
+	switch (pieceToMove) {
+	case Pieces::ROOK:
+		return "ROOK";
+	case Pieces::KNIGHT:
+		return "KNIGHT";
+	case Pieces::BISHOP:
+		return "BISHOP";
+	case Pieces::KING:
+		return "KING";
+	case Pieces::QUEEN:
+		return "QUEEN";
+	case Pieces::PAWN:
+		return "PAWN";
+	default:
+		return "EMPTY";
+	}
+}
+
+Pieces Piece::returnPiece() {
+	return Piece::pieceToMove;
+}
+
 bool Piece::processMove(Point startPoint, Point endPoint) {
 	Piece::startPoint = startPoint;
 	Piece::endPoint = endPoint;
+
+	if (Piece::pieceToMove == Pieces::ROOK)
+		return rookMove();
+	else if (Piece::pieceToMove == Pieces::KNIGHT)
+		return knightMove();
+	else if (Piece::pieceToMove == Pieces::BISHOP)
+		return bishopMove();
+	else if (Piece::pieceToMove == Pieces::KING)
+		return kingMove();
+	else if (Piece::pieceToMove == Pieces::QUEEN)
+		return rookMove();
+	else if (Piece::pieceToMove == Pieces::PAWN)
+		return rookMove();
+	else
+		return false;
 
 }
 
