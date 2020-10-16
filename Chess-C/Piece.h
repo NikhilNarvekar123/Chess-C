@@ -1,30 +1,39 @@
 #pragma once
-#include "Pieces.h";
 #include <iostream>
 #include <string>
+#include <vector>
+#include "Common.h"
 
+enum class PieceType { PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN, EMPTY };
+enum class Color {BLACK, WHITE, NONE};
+enum class Status {TAKEN, INGAME, SPAWN};
 
 using namespace std;
 
 class Piece {
 
 public:
-	Piece(Pieces piece);
-	bool processMove(Point startPoint, Point endPoint);
+	Piece();
+	Piece(PieceType piece, Color color);
+	Move movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> curBoard);
+	string returnBoardName();
 	string returnName();
-	Pieces returnPiece();
 
 private:
-	Pieces pieceToMove;
+	PieceType pieceToMove;
+	Color color;
+	Status status;
+	vector<vector<Piece>> boardCopy;
+
 	Point startPoint;
 	Point endPoint;
 
-	bool rookMove();
-	bool knightMove();
-	bool bishopMove();
-	bool kingMove();
-	bool queenMove();
-	bool pawnMove();
+	Move rookMove();
+	Move knightMove();
+	Move bishopMove();
+	Move kingMove();
+	Move queenMove();
+	Move pawnMove();
 	
 };
 

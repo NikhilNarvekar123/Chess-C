@@ -43,7 +43,7 @@ void twoPlayer() {
 	cout << "welcome to 2-player chess! enter input as shown: squareToStart squareToEnd" << endl;
 	cout << "for example, to move the piece at A1 to B2, you would type:\n";
 	cout << "A1 B2" << endl;
-	board.initialize();
+	board.refreshBoard();
 
 	while (userIn != "exit") {
 
@@ -54,9 +54,11 @@ void twoPlayer() {
 		cin >> endSquare;
 		actionCheck(endSquare);
 		
-		cout << "Player1, you have decided to move " << startSquare << " to " << endSquare << endl;
-		board.movePiece(startSquare, endSquare);
-		board.initialize();
+		cout << "Player1, you have decided to move " << startSquare << " to " << endSquare << endl << endl;
+		int res = board.movePiece(startSquare, endSquare);
+		if (res == -1)
+			cout << "Error! Turn skipped for invalid move." << endl;
+		board.refreshBoard();
 			
 		// add logic to check if game is over 
 
@@ -69,7 +71,9 @@ void twoPlayer() {
 
 		cout << "Player2, you have decided to move " << startSquare << " to " << endSquare << endl;
 		board.movePiece(startSquare, endSquare);
-		board.initialize();
+		if (res == -1)
+			cout << "Error! Turn skipped for invalid move." << endl;
+		board.refreshBoard();
 
 		// add logic to check if game is over
 	}

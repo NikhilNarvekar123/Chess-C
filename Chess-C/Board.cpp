@@ -2,19 +2,27 @@
 
 
 Board::Board() {
-	Board::curBoard = { {"rb","hb","bb","kb","qb","bb","hb","rb"},
-						{"pb","pb","pb","pb","pb","pb","pb","pb"},
-						{"  ","  ","  ","  ","  ","  ","  ","  "},
-						{"  ","  ","  ","  ","  ","  ","  ","  "},
-						{"  ","  ","  ","  ","  ","  ","  ","  "},
-						{"  ","  ","  ","  ","  ","  ","  ","  "},
-						{"pw","pw","pw","pw","pw","pw","pw","pw"},
-						{"rw","hw","bw","kw","qw","bw","hw","rw"} };
 
+	Board::curBoard = { {Piece(PieceType::ROOK, Color::BLACK), Piece(PieceType::KNIGHT, Color::BLACK), Piece(PieceType::BISHOP, Color::BLACK),
+						 Piece(PieceType::KING, Color::BLACK), Piece(PieceType::QUEEN, Color::BLACK), Piece(PieceType::BISHOP, Color::BLACK),
+						 Piece(PieceType::KNIGHT, Color::BLACK), Piece(PieceType::ROOK, Color::BLACK)} ,
+						{Piece(PieceType::PAWN, Color::BLACK), Piece(PieceType::PAWN, Color::BLACK), Piece(PieceType::PAWN, Color::BLACK),
+						 Piece(PieceType::PAWN, Color::BLACK), Piece(PieceType::PAWN, Color::BLACK), Piece(PieceType::PAWN, Color::BLACK),
+						 Piece(PieceType::PAWN, Color::BLACK), Piece(PieceType::PAWN, Color::BLACK)} ,
+						{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+						{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+						{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+						{Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+						{Piece(PieceType::PAWN, Color::WHITE), Piece(PieceType::PAWN, Color::WHITE), Piece(PieceType::PAWN, Color::WHITE),
+						 Piece(PieceType::PAWN, Color::WHITE), Piece(PieceType::PAWN, Color::WHITE), Piece(PieceType::PAWN, Color::WHITE),
+						 Piece(PieceType::PAWN, Color::WHITE), Piece(PieceType::PAWN, Color::WHITE)},
+						{Piece(PieceType::ROOK, Color::WHITE), Piece(PieceType::KNIGHT, Color::WHITE), Piece(PieceType::BISHOP, Color::WHITE),
+						 Piece(PieceType::KING, Color::WHITE), Piece(PieceType::QUEEN, Color::WHITE), Piece(PieceType::BISHOP, Color::WHITE),
+						 Piece(PieceType::KNIGHT, Color::WHITE), Piece(PieceType::ROOK, Color::WHITE)} };
 }
 
-void Board::initialize() {
-	cout << "";
+void Board::refreshBoard() {
+	cout << endl << endl;
 	for (int i = 0; i < 8; i++) {
 		printf("%6s", boardLabelsX[i].c_str());
 	}
@@ -22,40 +30,37 @@ void Board::initialize() {
 	for (int r = 0; r < 8; r++) {
 		cout << boardLabelsY[r] << " ";
 		for (int c = 0; c < 8; c++) {
-			cout << "| " << curBoard[r][c] << " |";
+			cout << "| " << curBoard[r][c].returnBoardName() << " |";
 		}
 		cout << endl << endl;
 	}
+	cout << endl;
 }
 
 int Board::movePiece(string startPosition, string endPosition) {
 	
 	Point startPoint = translateInput(startPosition);
 	Point endPoint = translateInput(endPosition);
+	
 
 	if (startPoint.valid == false || endPoint.valid == false)
 		return -1;
-
-	string startPiece = Board::curBoard[startPoint.row][startPoint.col];
-	Piece pieceToMove(findPieceType(startPiece));
-	string endPiece = Board::curBoard[endPoint.row][endPoint.col];
-	Piece pieceToTake(findPieceType(endPiece));
-
-	bool validMove = pieceToMove.processMove(startPoint, endPoint);
-	if (!validMove) {
+	if (startPoint.row == endPoint.row && startPoint.col == endPoint.col)
 		return -1;
-	}
-	else if (pieceToTake.returnPiece() == Pieces::EMPTY) {
-		Board::curBoard[endPoint.row][endPoint.col] = startPiece;
-		Board::curBoard[startPoint.row][endPoint.col] = "  ";
-		cout << pieceToMove.returnName() << "moved" << endl;
+	
+	Piece startPiece = curBoard[startPoint.row][startPoint.col];
+	Piece endPiece = curBoard[endPoint.row][endPoint.col];
+
+	Move move = startPiece.movePiece(startPoint, endPoint, curBoard);
+	if (move.valid && endPiece.returnName() == "EMPTY") {
+		curBoard[endPoint.row][endPoint.col] = startPiece;
+		curBoard[startPoint.row][startPoint.col] = Piece();
+		cout << startPiece.returnName() << " moved!" << endl;
 		return 0;
-	}
-	else if (pieceToTake.returnPiece() != Pieces::EMPTY) {
-		Board::curBoard[endPoint.row][endPoint.col] = startPiece;
-		Board::curBoard[startPoint.row][endPoint.col] = "  ";
-		cout << pieceToMove.returnName() << " moved\n" << endl;
-		cout << pieceToTake.returnName() << " was taken!\n" << endl;
+	} else if (move.valid && endPiece.returnName() != "EMPTY") {
+		curBoard[endPoint.row][endPoint.col] = startPiece;
+		curBoard[startPoint.row][startPoint.col] = Piece();
+		cout << startPiece.returnName() << " takes " << endPiece.returnName() << "!" << endl;
 		return 1;
 	}
 
@@ -71,7 +76,6 @@ Point Board::translateInput(string input) {
 	
 
 	for (int i = 0; i < 8; i++) {
-		cout << i << input.substr(0,1);
 		if (input.substr(0, 1) == boardLabelsX[i])
 			tempCol = i;
 		if (input.substr(1, 1) == boardLabelsY[i])
@@ -92,26 +96,21 @@ Point Board::translateInput(string input) {
 }
 
 
-Pieces Board::findPieceType(string piece) {
-	if (piece.find("r"))
-		return Pieces::ROOK;
-	else if (piece.find("h"))
-		return Pieces::KNIGHT;
-	else if (piece.find("b"))
-		return Pieces::BISHOP;
-	else if (piece.find("k"))
-		return Pieces::KING;
-	else if (piece.find("q"))
-		return Pieces::QUEEN;
-	else if (piece.find("p"))
-		return Pieces::PAWN;
-	else
-		return Pieces::EMPTY;
+PieceType Board::findPieceType(string piece) {
+	//if (piece.find("r"))
+	//	return Pieces::ROOK;
+	//else if (piece.find("h"))
+	//	return Pieces::KNIGHT;
+	//else if (piece.find("b"))
+	//	return Pieces::BISHOP;
+	//else if (piece.find("k"))
+	//	return Pieces::KING;
+	//else if (piece.find("q"))
+	//	return Pieces::QUEEN;
+	//else if (piece.find("p"))
+	//	return Pieces::PAWN;
+	//else
+	//	return Pieces::EMPTY;
+	return PieceType::EMPTY;
 }
-
-
-void Board::refreshBoard() {
-	initialize();
-}
-
 
