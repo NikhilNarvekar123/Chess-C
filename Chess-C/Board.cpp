@@ -41,7 +41,6 @@ int Board::movePiece(string startPosition, string endPosition) {
 	
 	Point startPoint = translateInput(startPosition);
 	Point endPoint = translateInput(endPosition);
-	
 
 	if (startPoint.valid == false || endPoint.valid == false)
 		return -1;
@@ -52,6 +51,7 @@ int Board::movePiece(string startPosition, string endPosition) {
 	Piece endPiece = curBoard[endPoint.row][endPoint.col];
 
 	Move move = startPiece.movePiece(startPoint, endPoint, curBoard);
+
 	if (move.valid && endPiece.returnName() == "EMPTY") {
 		curBoard[endPoint.row][endPoint.col] = startPiece;
 		curBoard[startPoint.row][startPoint.col] = Piece();
@@ -62,6 +62,9 @@ int Board::movePiece(string startPosition, string endPosition) {
 		curBoard[startPoint.row][startPoint.col] = Piece();
 		cout << startPiece.returnName() << " takes " << endPiece.returnName() << "!" << endl;
 		return 1;
+	}
+	else if(move.valid == false) {
+		return -1;
 	}
 
 	return -1;

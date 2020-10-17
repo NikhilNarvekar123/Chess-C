@@ -72,9 +72,9 @@ Move Piece::movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> cu
 	else if (Piece::pieceToMove == PieceType::KING)
 		return kingMove();
 	else if (Piece::pieceToMove == PieceType::QUEEN)
-		return rookMove();
+		return queenMove();
 	else if (Piece::pieceToMove == PieceType::PAWN)
-		return rookMove();
+		return pawnMove();
 	else {
 		Move move;
 		move.valid = false;
@@ -274,52 +274,72 @@ Move Piece::queenMove() {
 Move Piece::pawnMove() {
 	Move move;
 	int rowDif = startPoint.row - endPoint.row;
+	int colDif = startPoint.col - endPoint.col;
 
-	//if (startPoint.col != endPoint.col) {
-	//	move.valid = false;
-	//	return move;
-	//}
+	if (colDif != 0 && abs(colDif) != 1) {
+		
+		move.valid = false;
+		return move;
+	}
 
-	//
-	//if (this->color == Color::BLACK) {
-
-	//	if (!(rowDif < 0)) {
-	//		move.valid = false;
-	//		return move;
-	//	}
-	//}
-
-	//if (this->color == Color::WHITE) {
-
-	//	if (!(rowDif > 0)) {
-	//		move.valid = false;
-	//		return move;
-	//	}
-	//}
-
-
-	//rowDif = abs(rowDif);
-
-	//if (this->status == Status::SPAWN) {
-	//	if (rowDif == 1 || rowDif == 2) {
-	//		this->status = Status::INGAME;
-	//	}
-	//	else {
-	//		move.valid = false;
-	//		return move;
-	//	}
-	//}
-	//else {
-	//	if (rowDif != 1) {
-	//		move.valid - false;
-	//		return move;
-	//	}
-	//}
 	
-	move.valid = true;
-	move.takenCol = endPoint.col;
-	move.takenRow = endPoint.row;
+	if (this->color == Color::BLACK) {
 
+		if (!(rowDif < 0)) {
+			move.valid = false;
+			return move;
+		}
+	}
+
+	if (this->color == Color::WHITE) {
+
+		if (!(rowDif > 0)) {
+			move.valid = false;
+			return move;
+		}
+	}
+
+
+	rowDif = abs(rowDif);
+
+	if (rowDif == 1) {
+		
+		Piece::status = Status::INGAME;
+		if (abs(colDif) == 1) {
+			if (boardCopy[endPoint.row][endPoint.col].returnName() != "EMPTY") {
+				move.valid = true;
+				move.takenCol = endPoint.col;
+				move.takenRow = endPoint.row;
+				return move;
+			}
+			else {
+				move.valid = false;
+				return move;
+			}
+		}
+		
+		if (boardCopy[endPoint.row][endPoint.col].returnName() == "EMPTY") {
+
+			move.valid = true;
+			move.takenCol = endPoint.col;
+			move.takenRow = endPoint.row;
+			return move;
+		}
+		
+	}
+	else if (rowDif == 2) {
+		if (Piece::status == Status::SPAWN) {
+			move.valid = true;
+			move.takenCol = endPoint.col;
+			move.takenRow = endPoint.row;
+			Piece::status = Status::INGAME;
+			return move;
+		}
+	}
+
+	
+
+	move.valid = false;
 	return move;
 
 }

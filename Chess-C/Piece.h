@@ -6,7 +6,7 @@
 
 enum class PieceType { PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN, EMPTY };
 enum class Color {BLACK, WHITE, NONE};
-enum class Status {TAKEN, INGAME, SPAWN};
+enum class Status {TAKEN, INGAME=0, SPAWN=1};
 
 using namespace std;
 
