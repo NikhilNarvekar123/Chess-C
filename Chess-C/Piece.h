@@ -24,7 +24,7 @@ public:
 	Piece(PieceType piece, Color color);
 
 	/* Moves piece according to provided data */
-	bool movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> curBoard);
+	bool movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> curBoard, int playerID);
 	
 	/* Returns the display name of the piece */
 	string returnBoardName();
@@ -39,6 +39,7 @@ private:
 
 	// Passed copy of board to modify
 	vector<vector<Piece>> boardCopy;
+	int playerID = 0;
 
 	// Movement start and end points
 	Point startPoint;

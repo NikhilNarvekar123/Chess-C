@@ -13,7 +13,7 @@ public:
 	Board();
 	
 	// Moves given piece from startposition to endposition
-	int movePiece(string startPosition, string endPosition);
+	int movePiece(string startPosition, string endPosition, int playerID);
 
 	// Initalizes board
 	void initializeBoard();

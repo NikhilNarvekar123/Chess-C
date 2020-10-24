@@ -6,6 +6,8 @@
 #include <sstream>
 #include <regex>
 #include "Board.h"
+#include <windows.h>
+
 
 
 using namespace std;
@@ -55,7 +57,7 @@ void twoPlayer() {
 		actionCheck(endSquare);
 		
 		cout << "Player1, you have decided to move " << startSquare << " to " << endSquare << endl << endl;
-		int res = board.movePiece(startSquare, endSquare);
+		int res = board.movePiece(startSquare, endSquare, 1);
 		if (res == -1)
 			cout << "Error! Turn skipped for invalid move." << endl;
 		board.refreshBoard();
@@ -70,7 +72,7 @@ void twoPlayer() {
 		actionCheck(endSquare);
 
 		cout << "Player2, you have decided to move " << startSquare << " to " << endSquare << endl;
-		board.movePiece(startSquare, endSquare);
+		board.movePiece(startSquare, endSquare, 2);
 		if (res == -1)
 			cout << "Error! Turn skipped for invalid move." << endl;
 		board.refreshBoard();

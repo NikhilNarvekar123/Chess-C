@@ -57,11 +57,16 @@ string Piece::returnName() {
 	}
 }
 
-bool Piece::movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> boardCopy) {
+bool Piece::movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> boardCopy, int playerID) {
 	
 	this->startPoint = startPoint;
 	this->endPoint = endPoint;
 	this->boardCopy = boardCopy;
+
+	if (playerID == 1 && this->color != Color::WHITE)
+		return false;
+	if (playerID == 2 && this->color != Color::BLACK)
+		return false;
 
 	//break apart into separate methods to handle movement validation
 	if (piece == PieceType::ROOK)

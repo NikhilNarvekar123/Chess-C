@@ -45,7 +45,7 @@ void Board::refreshBoard() {
 }
 
 // Moves piece given start and end position (only if valid)
-int Board::movePiece(string startPosition, string endPosition) {
+int Board::movePiece(string startPosition, string endPosition, int playerID) {
 	
 	// Get index position of both start and end points in the board
 	Point startPoint = translateInput(startPosition);
@@ -64,7 +64,7 @@ int Board::movePiece(string startPosition, string endPosition) {
 	Piece endPiece = curBoard[endPoint.row][endPoint.col];
 
 	// Simulate moving piece and check if valid move given board state
-	bool validMove = startPiece.movePiece(startPoint, endPoint, curBoard);
+	bool validMove = startPiece.movePiece(startPoint, endPoint, curBoard, playerID);
 
 	if (validMove && endPiece.returnName() == "EMPTY") {
 		
