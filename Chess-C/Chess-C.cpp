@@ -6,7 +6,7 @@
 #include <sstream>
 #include <regex>
 #include "Board.h"
-#include <windows.h>
+#include "AI.h"
 
 
 
@@ -85,6 +85,57 @@ void twoPlayer() {
 }
 
 
+void onePlayer() {
+	Board board;
+
+	string userIn;
+	string startSquare;
+	string endSquare;
+	string result;
+	AI ai;
+
+	cout << "welcome to 1-player chess! enter input as shown: squareToStart squareToEnd" << endl;
+	cout << "you will play as white while the AI plays as black." << endl;
+	cout << "for example, to move the piece at A1 to B2, you would type:\n";
+	cout << "A1 B2" << endl;
+	board.refreshBoard();
+
+	while (userIn != "exit") {
+
+		cout << "Player1, enter square with piece you are going to move." << endl;
+		cin >> startSquare;
+		actionCheck(startSquare);
+		cout << "Player1, enter square piece will be moved to." << endl;
+		cin >> endSquare;
+		actionCheck(endSquare);
+
+		cout << "Player1, you have decided to move " << startSquare << " to " << endSquare << endl << endl;
+		int res = board.movePiece(startSquare, endSquare, 1);
+		if (res == -1)
+			cout << "Error! Turn skipped for invalid move." << endl;
+		board.refreshBoard();
+
+		// add logic to check if game is over 
+
+		cout << "AI is making their move! Analyzing board..." << endl;
+		Move aiMove = ai.makeMove(board.returnBoard());
+		res = board.movePieceAI(aiMove.startPt, aiMove.endPt, 2);
+
+		cout << "AI, has moved " << aiMove.startPt.row << aiMove.startPt.col  << " to " << aiMove.endPt.row << aiMove.endPt.col << endl;
+		board.movePiece(startSquare, endSquare, 2);
+		if (res == -1)
+			cout << "Error! Turn skipped for invalid move." << endl;
+		board.refreshBoard();
+
+		// add logic to check if game is over
+	}
+
+}
+
+void zeroplayer() {
+
+}
+
 
 
 
@@ -113,6 +164,12 @@ int main()
 	
 	if (userIn == "a") {
 		twoPlayer();
+	}
+	else if (userIn == "b") {
+		onePlayer();
+	}
+	else if (userIn == "c") {
+		zeroplayer();
 	}
 
 

@@ -57,6 +57,32 @@ string Piece::returnName() {
 	}
 }
 
+void Piece::updateLocation(Point newLoc) {
+	this->location = newLoc;
+}
+
+Point Piece::returnLocation() {
+	return this->location;
+}
+
+Color Piece::returnColor() {
+	return this->color;
+}
+
+PieceType Piece::returnPieceType() {
+	return this->piece;
+}
+
+bool Piece::checkBounds(Point p) {
+
+	// If end or start point out of grid, notify main method
+	if (!(p.row >= 0 && p.row <= 7))
+		return false;
+	if (!(p.col >= 0 && p.col <= 7))
+		return false;
+
+}
+
 bool Piece::movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> boardCopy, int playerID) {
 	
 	this->startPoint = startPoint;
@@ -66,6 +92,9 @@ bool Piece::movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> bo
 	if (playerID == 1 && this->color != Color::WHITE)
 		return false;
 	if (playerID == 2 && this->color != Color::BLACK)
+		return false;
+
+	if (!checkBounds(startPoint) || !checkBounds(endPoint))
 		return false;
 
 	//break apart into separate methods to handle movement validation

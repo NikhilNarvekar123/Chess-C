@@ -12,6 +12,8 @@ public:
 	// Default constructor
 	Board();
 	
+	int movePieceAI(Point startPt, Point endpt, int playerID);
+
 	// Moves given piece from startposition to endposition
 	int movePiece(string startPosition, string endPosition, int playerID);
 
@@ -20,6 +22,8 @@ public:
 
 	// Draws board in console
 	void refreshBoard();
+
+	vector<vector<Piece>> returnBoard();
 
 private:
 	

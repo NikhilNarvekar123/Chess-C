@@ -26,6 +26,9 @@ void Board::initializeBoard() {
 						 Piece(PieceType::KNIGHT, Color::WHITE), Piece(PieceType::ROOK, Color::WHITE)} };
 }
 
+vector<vector<Piece>> Board::returnBoard() {
+	return this->curBoard;
+}
 
 // Prints board to console (can improve formatting or even add better graphics)
 void Board::refreshBoard() {
@@ -37,12 +40,43 @@ void Board::refreshBoard() {
 	for (int r = 0; r < 8; r++) {
 		cout << boardLabelsY[r] << " ";
 		for (int c = 0; c < 8; c++) {
+			Point p;
+			p.col = c;
+			p.row = r;
+			curBoard[r][c].updateLocation(p);
 			cout << "| " << curBoard[r][c].returnBoardName() << " |";
 		}
 		cout << endl << endl;
 	}
 	cout << endl;
+
 }
+
+int Board::movePieceAI(Point startPt, Point endpt, int playerID) {
+	
+	Piece startPiece = curBoard[startPt.row][startPt.col];
+	Piece endPiece = curBoard[endpt.row][endpt.col];
+
+	if (endPiece.returnName() == "EMPTY") {
+
+		// If valid move to empty location, transfer board locations and output results 
+		curBoard[endpt.row][endpt.col] = startPiece;
+		curBoard[startPt.row][startPt.col] = Piece();
+		cout << startPiece.returnName() << " moved!" << endl;
+		return 0;
+	}
+	else if (endPiece.returnName() != "EMPTY") {
+
+		// If valid move to filled location, transfer board locations and output results
+		curBoard[endpt.row][endpt.col] = startPiece;
+		curBoard[startPt.row][startPt.col] = Piece();
+		cout << startPiece.returnName() << " takes " << endPiece.returnName() << "!" << endl;
+		return 1;
+	}
+
+	return -1;
+}
+
 
 // Moves piece given start and end position (only if valid)
 int Board::movePiece(string startPosition, string endPosition, int playerID) {
@@ -107,7 +141,7 @@ Point Board::translateInput(string input) {
 	// If end or start point out of grid, notify main method
 	if (!(tempRow >= 0 && tempRow <= 7))
 		p.valid = false;
-	if (!(tempCol >= 0 && tempRow <= 7))
+	if (!(tempCol >= 0 && tempCol <= 7))
 		p.valid = false;
 
 	return p;

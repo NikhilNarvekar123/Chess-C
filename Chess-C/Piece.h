@@ -31,6 +31,13 @@ public:
 	/* Returns the actual name of the piece */
 	string returnName();
 
+	Point returnLocation();
+	PieceType returnPieceType();
+	Color returnColor();
+
+	void updateLocation(Point newLoc);
+	bool checkBounds(Point p);
+
 private:
 	// Instance variables to describe current piece
 	PieceType piece;
@@ -44,6 +51,7 @@ private:
 	// Movement start and end points
 	Point startPoint;
 	Point endPoint;
+	Point location;
 
 	// Check if movement from start to end point is valid
 	bool rookMove();
