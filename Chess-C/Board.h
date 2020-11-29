@@ -24,6 +24,8 @@ public:
 	void refreshBoard();
 	int checkWin();
 
+	void setBoard(vector<vector<Piece>> newBoard);
+
 	vector<vector<Piece>> returnBoard();
 
 private:

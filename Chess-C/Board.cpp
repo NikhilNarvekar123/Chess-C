@@ -140,6 +140,10 @@ Point Board::translateInput(string input) {
 	return p;
 }
 
+void Board::setBoard(vector<vector<Piece>> newBoard) {
+	curBoard = newBoard;
+}
+
 int Board::movePieceAI(Point startPt, Point endpt) {
 
 	Piece startPiece = curBoard[startPt.row][startPt.col];

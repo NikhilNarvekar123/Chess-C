@@ -15,23 +15,24 @@ class AI {
 public:
 
 	vector<vector<Piece>> makeMove(vector<vector<Piece>> boardState);
-	void generateMoves(vector<vector<Piece>> boardState);
-	void simulateMove(Point startPt, Point endpt, vector<vector<Piece>> board);
-
+	vector<vector<vector<Piece>>> generateMoves(vector<vector<Piece>> boardState, Color color);
+	vector<vector<Piece>> simulateMove(Point startPt, Point endpt, vector<vector<Piece>> board);
+	int checkWin(vector<vector<Piece>> board);
+	vector<int> returnValuation(vector<vector<Piece>> board);
 
 
 
 private:
-	int runMinmax(int player, vector<vector<Piece>> loopBoard);
+	int runMinmax(int player, vector<vector<Piece>> loopBoard, int curDepth, int maxDepth);
 	
 	vector<vector<Piece>> currentBoard;
 	vector<vector<vector<Piece>>> boardStates;
 
-	void rookMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	void knightMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	void bishopMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	void kingMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	void queenMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	void pawnMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<vector<Piece>>> rookMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<vector<Piece>>> knightMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<vector<Piece>>> bishopMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<vector<Piece>>> kingMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<vector<Piece>>> queenMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<vector<Piece>>> pawnMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
 };
 

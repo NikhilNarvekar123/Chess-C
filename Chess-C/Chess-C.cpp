@@ -120,10 +120,9 @@ void onePlayer() {
 		// add logic to check if game is over 
 
 		cout << "AI is making their move! Analyzing board..." << endl;
-		Move aiMove = ai.makeMove(board.returnBoard());
-		res = board.movePieceAI(aiMove.startPt, aiMove.endPt, 2);
-
-		cout << "AI, has moved " << aiMove.startPt.row << aiMove.startPt.col  << " to " << aiMove.endPt.row << aiMove.endPt.col << endl;
+		board.setBoard(ai.makeMove(board.returnBoard()));
+		
+		cout << "AI, has moved. " << endl;
 		board.movePiece(startSquare, endSquare, 2);
 		if (res == -1)
 			cout << "Error! Turn skipped for invalid move." << endl;
