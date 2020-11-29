@@ -6,23 +6,15 @@ struct Point {
 	int col;
 	bool valid = true;
 	int value;
-	Point() {
-
-	}
-	Point(int r, int c) {
-		row = r;
-		col = c;
-	}
+	Point() {}
+	Point(int r, int c) : row{ r }, col{ c } {}
 };
 
+// Represents different types of game-pieces
+enum class Type { PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN, EMPTY };
 
-struct Move {
-	Point startPt;
-	Point endPt;
-	int value;
-	Move() {};
-	Move(Point start, Point end) {
-		startPt = start;
-		endPt = end;
-	}
-};
+// Represent different colors of board
+enum class Color { BLACK, WHITE, EMPTY };
+
+// Represent different states of a piece (primarily used for pawns)
+enum class Status { TAKEN, INGAME, SPAWN, EMPTY };

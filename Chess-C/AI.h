@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "Piece.h"
+#include "Board.h"
 #include <stdlib.h>
 
 using namespace std;
@@ -13,24 +14,24 @@ class AI {
 
 public:
 
-	Move makeMove(vector<vector<Piece>> boardState);
+	vector<vector<Piece>> makeMove(vector<vector<Piece>> boardState);
 	void generateMoves(vector<vector<Piece>> boardState);
-
+	void simulateMove(Point startPt, Point endpt, vector<vector<Piece>> board);
 
 
 
 
 private:
-	vector<vector<Piece>> boardState;
-	vector<Move> moveList;
+	int runMinmax(int player, vector<vector<Piece>> loopBoard);
+	
+	vector<vector<Piece>> currentBoard;
+	vector<vector<vector<Piece>>> boardStates;
 
-	void rookMoves(Piece curPiece);
-	void knightMoves(Piece curPiece);
-	void bishopMoves(Piece curPiece);
-	void kingMoves(Piece curPiece);
-	void queenMoves(Piece curPiece);
-	void pawnMoves(Piece curPiece);
-
-
+	vector<vector<Piece>> rookMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<Piece>> knightMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<Piece>> bishopMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<Piece>> kingMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<Piece>> queenMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	vector<vector<Piece>> pawnMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
 };
 

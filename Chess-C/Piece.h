@@ -4,14 +4,6 @@
 #include <vector>
 #include "Common.h"
 
-// Represents different types of game-pieces
-enum class PieceType { PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN, EMPTY };
-
-// Represent different colors of board
-enum class Color {BLACK, WHITE, EMPTY};
-
-// Represent different states of a piece (primarily used for pawns)
-enum class Status {TAKEN, INGAME, SPAWN, EMPTY};
 
 using namespace std;
 
@@ -21,45 +13,39 @@ public:
 	/* Default constructor */
 	Piece();
 	/* Constructor with given values */
-	Piece(PieceType piece, Color color);
+	Piece(Type piece, Color color);
 
 	/* Moves piece according to provided data */
-	bool movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> curBoard, int playerID);
+	bool movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> curBoard);
 	
 	/* Returns the display name of the piece */
 	string returnBoardName();
 	/* Returns the actual name of the piece */
 	string returnName();
-
-	Point returnLocation();
-	PieceType returnPieceType();
+	Type returnType();
 	Color returnColor();
-
-	void updateLocation(Point newLoc);
 	bool checkBounds(Point p);
 
 private:
 	// Instance variables to describe current piece
-	PieceType piece;
+	Type piece;
 	Color color;
 	Status status;
 
 	// Passed copy of board to modify
 	vector<vector<Piece>> boardCopy;
-	int playerID = 0;
 
 	// Movement start and end points
 	Point startPoint;
 	Point endPoint;
-	Point location;
 
 	// Check if movement from start to end point is valid
-	bool rookMove();
-	bool knightMove();
-	bool bishopMove();
-	bool kingMove();
-	bool queenMove();
-	bool pawnMove();
+	bool rookMove(Point startPoint, Point endPoint);
+	bool knightMove(Point startPoint, Point endPoint);
+	bool bishopMove(Point startPoint, Point endPoint);
+	bool kingMove(Point startPoint, Point endPoint);
+	bool queenMove(Point startPoint, Point endPoint);
+	bool pawnMove(Point startPoint, Point endPoint);
 	
 };
 

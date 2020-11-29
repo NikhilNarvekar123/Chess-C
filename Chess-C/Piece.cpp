@@ -2,12 +2,12 @@
 #include "Piece.h";
 
 Piece::Piece() {
-	piece = PieceType::EMPTY;
+	piece = Type::EMPTY;
 	color = Color::EMPTY;
 	status = Status::EMPTY;
 }
 
-Piece::Piece(PieceType piece, Color color) {
+Piece::Piece(Type piece, Color color) {
 	this->piece = piece;
 	this->color = color;
 	status = Status::SPAWN;
@@ -21,169 +21,140 @@ string Piece::returnBoardName() {
 		colorPostfix = "w";
 
 	switch (piece) {
-		case PieceType::ROOK:
-			return "r" + colorPostfix;
-		case PieceType::KNIGHT:
-			return "h" + colorPostfix;
-		case PieceType::BISHOP:
-			return "b" + colorPostfix;
-		case PieceType::KING:
-			return "k" + colorPostfix;
-		case PieceType::QUEEN:
-			return "q" + colorPostfix;
-		case PieceType::PAWN:
-			return "p" + colorPostfix;
-		default:
-			return "  ";
+	case Type::ROOK:
+		return "r" + colorPostfix;
+	case Type::KNIGHT:
+		return "h" + colorPostfix;
+	case Type::BISHOP:
+		return "b" + colorPostfix;
+	case Type::KING:
+		return "k" + colorPostfix;
+	case Type::QUEEN:
+		return "q" + colorPostfix;
+	case Type::PAWN:
+		return "p" + colorPostfix;
+	default:
+		return "  ";
 	}
 }
 
 string Piece::returnName() {
 	switch (piece) {
-	case PieceType::ROOK:
+	case Type::ROOK:
 		return "ROOK";
-	case PieceType::KNIGHT:
+	case Type::KNIGHT:
 		return "KNIGHT";
-	case PieceType::BISHOP:
+	case Type::BISHOP:
 		return "BISHOP";
-	case PieceType::KING:
+	case Type::KING:
 		return "KING";
-	case PieceType::QUEEN:
+	case Type::QUEEN:
 		return "QUEEN";
-	case PieceType::PAWN:
+	case Type::PAWN:
 		return "PAWN";
 	default:
 		return "EMPTY";
 	}
 }
 
-void Piece::updateLocation(Point newLoc) {
-	this->location = newLoc;
-}
-
-Point Piece::returnLocation() {
-	return this->location;
+Type Piece::returnType() {
+	return this->piece;
 }
 
 Color Piece::returnColor() {
 	return this->color;
 }
 
-PieceType Piece::returnPieceType() {
-	return this->piece;
-}
+bool Piece::movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> boardCopy) {
 
-bool Piece::checkBounds(Point p) {
-
-	// If end or start point out of grid, notify main method
-	if (!(p.row >= 0 && p.row <= 7))
-		return false;
-	if (!(p.col >= 0 && p.col <= 7))
-		return false;
-
-}
-
-bool Piece::movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> boardCopy, int playerID) {
-	
-	this->startPoint = startPoint;
-	this->endPoint = endPoint;
 	this->boardCopy = boardCopy;
 
-	if (playerID == 1 && this->color != Color::WHITE)
-		return false;
-	if (playerID == 2 && this->color != Color::BLACK)
-		return false;
-
-	if (!checkBounds(startPoint) || !checkBounds(endPoint))
-		return false;
-
 	//break apart into separate methods to handle movement validation
-	if (piece == PieceType::ROOK)
-		return rookMove();
-	else if (piece == PieceType::KNIGHT)
-		return knightMove();
-	else if (piece == PieceType::BISHOP)
-		return bishopMove();
-	else if (piece == PieceType::KING)
-		return kingMove();
-	else if (piece == PieceType::QUEEN)
-		return queenMove();
-	else if (piece == PieceType::PAWN)
-		return pawnMove();
+	if (piece == Type::ROOK)
+		return rookMove(startPoint, endPoint);
+	else if (piece == Type::KNIGHT)
+		return knightMove(startPoint, endPoint);
+	else if (piece == Type::BISHOP)
+		return bishopMove(startPoint, endPoint);
+	else if (piece == Type::KING)
+		return kingMove(startPoint, endPoint);
+	else if (piece == Type::QUEEN)
+		return queenMove(startPoint, endPoint);
+	else if (piece == Type::PAWN)
+		return pawnMove(startPoint, endPoint);
 	else
-		return false; 
+		return false;
 }
 
-bool Piece::rookMove() {
+bool Piece::rookMove(Point startPoint, Point endPoint) {
 
 	bool firstCheck = false;
-	
+
 	if (abs(startPoint.row - endPoint.row) == 0)
 		firstCheck = true;
-	else if(abs(startPoint.col - endPoint.col) == 0)
+	else if (abs(startPoint.col - endPoint.col) == 0)
 		firstCheck = true;
-	
+
 	if (!firstCheck) {
 		return false;
-	} 
-	else {
-	
-		int rowDif = startPoint.row - endPoint.row;
-		int colDif = startPoint.col - endPoint.col;
-
-		//downward
-		if (rowDif < 0) {
-			for (int r = startPoint.row; r <= endPoint.row; r++) {
-				Piece alongPiece = boardCopy[r][startPoint.col];
-				if (alongPiece.returnName() != "EMPTY" && r != endPoint.row) {
-					return false;
-				}
-			}
-		}
-		//upward
-		if (rowDif > 0) {
-			for (int r = startPoint.row; r >= endPoint.row; r--) {
-				Piece alongPiece = boardCopy[r][startPoint.col];
-				if (alongPiece.returnName() != "EMPTY" && r != endPoint.row) {
-					return false;
-				}
-			}
-		}
-		//right
-		if (colDif < 0) {
-			for (int c = startPoint.col; c <= endPoint.col; c++) {
-				Piece alongPiece = boardCopy[startPoint.row][c];
-				if (alongPiece.returnName() != "EMPTY" && c != endPoint.col) {
-					return false;
-				}
-			}
-		}
-		//left
-		if (colDif > 0) {
-			for (int c = startPoint.col; c >= endPoint.col; c--) {
-				Piece alongPiece = boardCopy[startPoint.row][c];
-				if (alongPiece.returnName() != "EMPTY" && c != endPoint.col) {
-					return false;
-				}
-			}
-		}
-
-		return true;
 	}
+
+	int rowDif = startPoint.row - endPoint.row;
+	int colDif = startPoint.col - endPoint.col;
+
+	//downward
+	if (rowDif < 0) {
+		for (int r = startPoint.row; r <= endPoint.row; r++) {
+			Piece alongPiece = boardCopy[r][startPoint.col];
+			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
+				return false;
+			}
+		}
+	}
+	//upward
+	if (rowDif > 0) {
+		for (int r = startPoint.row; r >= endPoint.row; r--) {
+			Piece alongPiece = boardCopy[r][startPoint.col];
+			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
+				return false;
+			}
+		}
+	}
+	//right
+	if (colDif < 0) {
+		for (int c = startPoint.col; c <= endPoint.col; c++) {
+			Piece alongPiece = boardCopy[startPoint.row][c];
+			if (alongPiece.returnType() != Type::EMPTY && c != endPoint.col) {
+				return false;
+			}
+		}
+	}
+	//left
+	if (colDif > 0) {
+		for (int c = startPoint.col; c >= endPoint.col; c--) {
+			Piece alongPiece = boardCopy[startPoint.row][c];
+			if (alongPiece.returnType() != Type::EMPTY && c != endPoint.col) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+
 }
 
-bool Piece::knightMove() {
+bool Piece::knightMove(Point startPoint, Point endPoint) {
 
 	bool firstCheck = false;
 	if (abs(startPoint.row - endPoint.row) == 2 && abs(startPoint.col - endPoint.col) == 1)
 		firstCheck = true;
 	else if (abs(startPoint.row - endPoint.row) == 1 && abs(startPoint.col - endPoint.col) == 2)
-		firstCheck = true;		
+		firstCheck = true;
 
 	return firstCheck;
 }
 
-bool Piece::bishopMove() {
+bool Piece::bishopMove(Point startPoint, Point endPoint) {
 
 	bool firstCheck = false;
 	if (abs(startPoint.row - endPoint.row) == abs(startPoint.col - endPoint.col))
@@ -192,61 +163,59 @@ bool Piece::bishopMove() {
 	if (!firstCheck) {
 		return false;
 	}
-	else {
 
-		int rowDif = startPoint.row - endPoint.row;
-		int colDif = startPoint.col - endPoint.col;
+	int rowDif = startPoint.row - endPoint.row;
+	int colDif = startPoint.col - endPoint.col;
 
-		//southeast
-		if (rowDif < 0 && colDif < 0) {
-			int c = startPoint.col;
-			for (int r = startPoint.row; r <= endPoint.row; r++) {
-				Piece alongPiece = boardCopy[r][c];
-				if (alongPiece.returnName() != "EMPTY" && r != endPoint.row) {
-					return false;
-				}
-				c++;
+	//southeast
+	if (rowDif < 0 && colDif < 0) {
+		int c = startPoint.col;
+		for (int r = startPoint.row; r <= endPoint.row; r++) {
+			Piece alongPiece = boardCopy[r][c];
+			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
+				return false;
 			}
+			c++;
 		}
-		//southwest
-		if (rowDif < 0 && colDif > 0) {
-			int c = startPoint.col;
-			for (int r = startPoint.row; r <= endPoint.row; r++) {
-				Piece alongPiece = boardCopy[r][c];
-				if (alongPiece.returnName() != "EMPTY" && r != endPoint.row) {
-					return false;
-				}
-				c--;
-			}
-		}
-		//northeast
-		if (rowDif > 0 && colDif < 0) {
-			int c = startPoint.col;
-			for (int r = startPoint.row; r >= endPoint.row; r--) {
-				Piece alongPiece = boardCopy[r][c];
-				if (alongPiece.returnName() != "EMPTY" && r != endPoint.row) {
-					return false;
-				}
-				c++;
-			}
-		}
-		//northwest
-		if (rowDif > 0 && colDif > 0) {
-			int c = startPoint.col;
-			for (int r = startPoint.row; r >= endPoint.row; r--) {
-				Piece alongPiece = boardCopy[r][c];
-				if (alongPiece.returnName() != "EMPTY" && r != endPoint.row) {
-					return false;
-				}
-				c--;
-			}
-		}
-
-		return true;
 	}
+	//southwest
+	if (rowDif < 0 && colDif > 0) {
+		int c = startPoint.col;
+		for (int r = startPoint.row; r <= endPoint.row; r++) {
+			Piece alongPiece = boardCopy[r][c];
+			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
+				return false;
+			}
+			c--;
+		}
+	}
+	//northeast
+	if (rowDif > 0 && colDif < 0) {
+		int c = startPoint.col;
+		for (int r = startPoint.row; r >= endPoint.row; r--) {
+			Piece alongPiece = boardCopy[r][c];
+			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
+				return false;
+			}
+			c++;
+		}
+	}
+	//northwest
+	if (rowDif > 0 && colDif > 0) {
+		int c = startPoint.col;
+		for (int r = startPoint.row; r >= endPoint.row; r--) {
+			Piece alongPiece = boardCopy[r][c];
+			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
+				return false;
+			}
+			c--;
+		}
+	}
+
+	return true;
 }
 
-bool Piece::kingMove() {
+bool Piece::kingMove(Point startPoint, Point endPoint) {
 
 	bool firstCheck = false;
 	if (abs(startPoint.row - endPoint.row) <= 1 && abs(startPoint.col - endPoint.col) <= 1)
@@ -255,16 +224,16 @@ bool Piece::kingMove() {
 	return firstCheck;
 }
 
-bool Piece::queenMove() {
+bool Piece::queenMove(Point startPoint, Point endPoint) {
 
-	bool firstCheck = bishopMove();
+	bool firstCheck = bishopMove(startPoint, endPoint);
 	if (firstCheck == false)
-		firstCheck = rookMove();
-	
+		firstCheck = rookMove(startPoint, endPoint);
+
 	return firstCheck;
 }
 
-bool Piece::pawnMove() {
+bool Piece::pawnMove(Point startPoint, Point endPoint) {
 
 	bool firstCheck;
 	int rowDif = startPoint.row - endPoint.row;
@@ -282,25 +251,25 @@ bool Piece::pawnMove() {
 
 	// If moving 1 space up/down
 	if (abs(rowDif) == 1) {
-		
+
 		status = Status::INGAME;
-		
+
 		// If taking piece, then has to be non-empty space
 		if (abs(colDif) == 1) {
-			if (boardCopy[endPoint.row][endPoint.col].returnName() != "EMPTY") {
+			if (boardCopy[endPoint.row][endPoint.col].returnType() != Type::EMPTY) {
 				status = Status::INGAME;
 				return true;
 			}
 			else
 				return false;
 		}
-		
+
 		// As long as space moving to is empty (and in same row)
-		if (boardCopy[endPoint.row][endPoint.col].returnName() == "EMPTY") {
+		if (boardCopy[endPoint.row][endPoint.col].returnType() == Type::EMPTY) {
 			status = Status::INGAME;
 			return true;
 		}
-		
+
 	}
 	else if (abs(rowDif) == 2) {
 		// If spawn piece, moving two squares ahead is allowed
@@ -311,4 +280,13 @@ bool Piece::pawnMove() {
 	}
 
 	return false;
+}
+
+
+bool Piece::checkBounds(Point p) {
+	// If end or start point out of grid, notify main method
+	if (!(p.row >= 0 && p.row <= 7))
+		return false;
+	if (!(p.col >= 0 && p.col <= 7))
+		return false;
 }

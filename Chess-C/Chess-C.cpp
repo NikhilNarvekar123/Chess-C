@@ -9,9 +9,10 @@
 #include "AI.h"
 
 
-
 using namespace std;
 
+
+// makes sure that user has inputted a valid move location
 bool inputValidifier(string input) {
 	regex format("[A-Z][1-8]");
 	regex format2("[a-z][1-8]");
@@ -21,6 +22,7 @@ bool inputValidifier(string input) {
 		return false;
 }
 
+// wrapper method for input-validifier which keeps prompting the user until valid input entered
 void actionCheck(string& input) {
 	bool isValid = inputValidifier(input);
 	
@@ -174,7 +176,4 @@ int main()
 
 
 	return 0;
-	
-
-
 }
