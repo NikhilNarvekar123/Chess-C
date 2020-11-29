@@ -27,11 +27,11 @@ private:
 	vector<vector<Piece>> currentBoard;
 	vector<vector<vector<Piece>>> boardStates;
 
-	vector<vector<Piece>> rookMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	vector<vector<Piece>> knightMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	vector<vector<Piece>> bishopMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	vector<vector<Piece>> kingMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	vector<vector<Piece>> queenMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
-	vector<vector<Piece>> pawnMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	void rookMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	void knightMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	void bishopMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	void kingMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	void queenMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
+	void pawnMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt);
 };
 

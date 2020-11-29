@@ -75,8 +75,7 @@ void AI::generateMoves(vector<vector<Piece>> boardState) {
 }
 
 
-
-vector<vector<Piece>> AI::rookMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
+void AI::rookMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
 
 	// adding all valid moves in current column
 	for (int r = 0; r < 8; r++) {
@@ -106,7 +105,7 @@ vector<vector<Piece>> AI::rookMoves(vector<vector<Piece>> boardState, Piece curP
 
 }
 
-vector<vector<Piece>> AI::knightMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
+void AI::knightMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
 	
 	vector<Point> validEndpts;
 
@@ -129,7 +128,7 @@ vector<vector<Piece>> AI::knightMoves(vector<vector<Piece>> boardState, Piece cu
 }
 
 
-vector<vector<Piece>> AI::bishopMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
+void AI::bishopMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
 
 	Point endPt(startPt.row, startPt.col);
 
@@ -186,14 +185,14 @@ vector<vector<Piece>> AI::bishopMoves(vector<vector<Piece>> boardState, Piece cu
 
 }
 
-vector<vector<Piece>> AI::queenMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
+void AI::queenMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
 
 	bishopMoves(boardState, curPiece, startPt);
 	rookMoves(boardState, curPiece, startPt);
 
 }
 
-vector<vector<Piece>> AI::kingMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
+void AI::kingMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
 
 	vector<Point> validEndpts;
 
@@ -215,7 +214,7 @@ vector<vector<Piece>> AI::kingMoves(vector<vector<Piece>> boardState, Piece curP
 
 }
 
-vector<vector<Piece>> AI::pawnMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
+void AI::pawnMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
 
 	for (int r = 0; r < 8; r++) {
 		Point endPt(r, startPt.col);
