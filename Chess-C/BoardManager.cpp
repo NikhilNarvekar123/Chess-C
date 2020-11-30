@@ -3,33 +3,54 @@
 #define WHITE_SQUARE 0xDB
 #define BLACK_SQUARE 0xFF
 
-// Initializes board to default state
+// Default constructor
 Board::Board() {
-	initBoard();
+	Board::curBoard = { {Piece(Type::ROOK, Color::BLACK), Piece(Type::KNIGHT, Color::BLACK), Piece(Type::BISHOP, Color::BLACK),
+			   Piece(Type::KING, Color::BLACK), Piece(Type::QUEEN, Color::BLACK), Piece(Type::BISHOP, Color::BLACK),
+			   Piece(Type::KNIGHT, Color::BLACK), Piece(Type::ROOK, Color::BLACK)} ,
+			  {Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK),
+			   Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK),
+			   Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK)} ,
+			  {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+			  {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+			  {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+			  {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
+			  {Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE),
+			   Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE),
+			   Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE)},
+			  {Piece(Type::ROOK, Color::WHITE), Piece(Type::KNIGHT, Color::WHITE), Piece(Type::BISHOP, Color::WHITE),
+			   Piece(Type::KING, Color::WHITE), Piece(Type::QUEEN, Color::WHITE), Piece(Type::BISHOP, Color::WHITE),
+			   Piece(Type::KNIGHT, Color::WHITE), Piece(Type::ROOK, Color::WHITE)} };
 }
 
-// Initializes board to default state
-void Board::initBoard() {
-	Board::curBoard = { {Piece(Type::ROOK, Color::BLACK), Piece(Type::KNIGHT, Color::BLACK), Piece(Type::BISHOP, Color::BLACK),
-		   Piece(Type::KING, Color::BLACK), Piece(Type::QUEEN, Color::BLACK), Piece(Type::BISHOP, Color::BLACK),
-		   Piece(Type::KNIGHT, Color::BLACK), Piece(Type::ROOK, Color::BLACK)} ,
-		  {Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK),
-		   Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK),
-		   Piece(Type::PAWN, Color::BLACK), Piece(Type::PAWN, Color::BLACK)} ,
-		  {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		  {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		  {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		  {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
-		  {Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE),
-		   Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE),
-		   Piece(Type::PAWN, Color::WHITE), Piece(Type::PAWN, Color::WHITE)},
-		  {Piece(Type::ROOK, Color::WHITE), Piece(Type::KNIGHT, Color::WHITE), Piece(Type::BISHOP, Color::WHITE),
-		   Piece(Type::KING, Color::WHITE), Piece(Type::QUEEN, Color::WHITE), Piece(Type::BISHOP, Color::WHITE),
-		   Piece(Type::KNIGHT, Color::WHITE), Piece(Type::ROOK, Color::WHITE)} };
+vector<vector<Piece>> Board::returnBoard() {
+	return this->curBoard;
+}
+
+// draws 'pretty' board
+// TODO: Add in functionality to also print board pieces
+void Board::printBoard() {
+	for (int m = 0; m < 4; m++) {
+		for (int k = 0; k < 4; k++) {
+			for (int j = 0; j < 4; j++) {
+				for (int i = 0; i < 7; i++) { cout << char(WHITE_SQUARE); }
+				for (int i = 0; i < 7; i++) { cout << char(BLACK_SQUARE); }
+			}
+			cout << endl;
+		}
+
+		for (int k = 0; k < 4; k++) {
+			for (int j = 0; j < 4; j++) {
+				for (int i = 0; i < 7; i++) { cout << char(BLACK_SQUARE); }
+				for (int i = 0; i < 7; i++) { cout << char(WHITE_SQUARE); }
+			}
+			cout << endl;
+		}
+	}
 }
 
 // Prints board to console
-void Board::printBoard() {
+void Board::refreshBoard() {
 	cout << endl << endl;
 	for (int i = 0; i < 8; i++) {
 		printf("%6s", boardLabelsX[i].c_str());
@@ -46,24 +67,33 @@ void Board::printBoard() {
 
 }
 
+// Moves piece given start and end position (only if valid)
+int Board::movePiece(string startPosition, string endPosition, int playerID) {
 
-int Board::movePiece(Point startPt, Point endPt, Color playerColor) {
+	// Get index position of both start and end points in the board
+	Point startPoint = translateInput(startPosition);
+	Point endPoint = translateInput(endPosition);
 
+	// If not valid positions, raise an error (-1)
+	if (startPoint.valid == false || endPoint.valid == false)
+		return -1;
+	if (startPoint.row == endPoint.row && startPoint.col == endPoint.col)
+		return -1;
+
+	// With valid positions, get pieces at start and end positions
 	Piece startPiece = curBoard[startPoint.row][startPoint.col];
 	Piece endPiece = curBoard[endPoint.row][endPoint.col];
 
+	// if startpiece empty space
 	if (startPiece.returnType() == Type::EMPTY)
 		return -1;
-	if (startPiece.returnColor() == Color::WHITE && playerColor != Color::WHITE)
+	if (startPiece.returnColor() == Color::WHITE && playerID != 1)
 		return -1;
-	if (startPiece.returnColor() == Color::BLACK && playerColor != Color::BLACK)
+	if (startPiece.returnColor() == Color::BLACK && playerID != 2)
 		return -1;
 
-	bool validMove = false;
-
-	if (startPiece.returnType() == Type::ROOK)
-		validMove = startPiece.rookMove(startPt, endPt);
-
+	// Simulate moving piece and check if valid move given board state
+	bool validMove = startPiece.movePiece(startPoint, endPoint, curBoard);
 
 	if (validMove && endPiece.returnType() == Type::EMPTY) {
 		// If valid move to empty location, transfer board locations and output results

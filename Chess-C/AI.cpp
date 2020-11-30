@@ -4,26 +4,21 @@ vector<vector<Piece>> AI::simulateMove(Point startPt, Point endpt, vector<vector
 	Piece startPiece = board[startPt.row][startPt.col];
 	Piece endPiece = board[endpt.row][endpt.col];
 
-	if (endPiece.returnType() == Type::EMPTY) {
-		// If valid move to empty location, transfer board locations and output results
-		board[endpt.row][endpt.col] = startPiece;
-		board[startPt.row][startPt.col] = Piece();
-	}
-	else if (endPiece.returnType() != Type::EMPTY) {
-		// If valid move to filled location, transfer board locations and output results
-		board[endpt.row][endpt.col] = startPiece;
-		board[startPt.row][startPt.col] = Piece();
-	}
+	board[endpt.row][endpt.col] = startPiece;
+	board[startPt.row][startPt.col] = Piece();
+
 	return board;
 }
 
 vector<vector<Piece>> AI::makeMove(vector<vector<Piece>> boardState) {
-	
+
 	boardStates = generateMoves(boardState, Color::BLACK);
 	int maxMoveVal = INT_MIN;
 	vector<vector<Piece>> bestBoardState;
 	for (int i = 0; i < boardStates.size(); i++) {
+		
 		int value = runMinmax(1, boardStates[i], 0, 3);
+		
 		if (value > maxMoveVal) {
 			maxMoveVal = value;
 			bestBoardState = boardStates[i];
@@ -54,6 +49,7 @@ int AI::runMinmax(int player, vector<vector<Piece>> loopBoard, int curDepth, int
 	if (player == 1) {
 
 		boardStates = generateMoves(loopBoard, Color::WHITE);
+	
 		int minMoveValue = INT_MAX;
 		vector<vector<Piece>> bestBoardState;
 		for (int i = 0; i < boardStates.size(); i++) {
@@ -71,6 +67,7 @@ int AI::runMinmax(int player, vector<vector<Piece>> loopBoard, int curDepth, int
 	else {
 
 		boardStates = generateMoves(loopBoard, Color::BLACK);
+		
 		int maxMoveValue = INT_MIN;
 		vector<vector<Piece>> bestBoardState;
 		for (int i = 0; i < boardStates.size(); i++) {
@@ -104,18 +101,19 @@ vector<vector<vector<Piece>>> AI::generateMoves(vector<vector<Piece>> boardState
 			vector<vector<vector<Piece>>> tempList;
 			if (piece.returnColor() == color) {
 				if (piece.returnType() == Type::BISHOP)
-					tempList = bishopMoves(currentBoard, piece, curLocation);
+					tempList = bishopMoves(boardState, piece, curLocation);
 				if (piece.returnType() == Type::ROOK)
-					tempList = rookMoves(currentBoard, piece, curLocation);
+					tempList = rookMoves(boardState, piece, curLocation);
 				if (piece.returnType() == Type::KING)
-					tempList = kingMoves(currentBoard, piece, curLocation);
+					tempList = kingMoves(boardState, piece, curLocation);
 				if (piece.returnType() == Type::QUEEN)
-					tempList = queenMoves(currentBoard, piece, curLocation);
+					tempList = queenMoves(boardState, piece, curLocation);
 				if (piece.returnType() == Type::KNIGHT)
-					tempList = knightMoves(currentBoard, piece, curLocation);
+					tempList = knightMoves(boardState, piece, curLocation);
 				if (piece.returnType() == Type::PAWN)
-					tempList = pawnMoves(currentBoard, piece, curLocation);
+					tempList = pawnMoves(boardState, piece, curLocation);
 			}
+			//cout << tempList.size() << " " << r << " " << c << "               ";
 			for (int i = 0; i < tempList.size(); i++) {
 				boardStates.push_back(tempList[i]);
 			}
@@ -126,6 +124,7 @@ vector<vector<vector<Piece>>> AI::generateMoves(vector<vector<Piece>> boardState
 }
 
 vector<vector<vector<Piece>>> AI::rookMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
+
 
 	vector<vector<vector<Piece>>> tempList;
 
@@ -155,12 +154,13 @@ vector<vector<vector<Piece>>> AI::rookMoves(vector<vector<Piece>> boardState, Pi
 		}
 	}
 
+	//cout << "rook passed" << endl;
 	return tempList;
 
 }
 
 vector<vector<vector<Piece>>> AI::knightMoves(vector<vector<Piece>> boardState, Piece curPiece, Point startPt) {
-	
+	 
 	vector<vector<vector<Piece>>> tempList;
 
 	vector<Point> validEndpts;
@@ -173,14 +173,18 @@ vector<vector<vector<Piece>>> AI::knightMoves(vector<vector<Piece>> boardState, 
 	validEndpts.push_back(Point(startPt.row + 1, startPt.col + 2));
 	validEndpts.push_back(Point(startPt.row - 1, startPt.col - 2));
 	validEndpts.push_back(Point(startPt.row - 1, startPt.col + 2));
-
+	
 	for (int i = 0; i < validEndpts.size(); i++) {
+		if (!curPiece.checkBounds(validEndpts[i])) {
+			continue;
+		}
 		if (curPiece.movePiece(startPt, validEndpts[i], boardState)) {
 			if (startPt.row != validEndpts[i].row && startPt.col != validEndpts[i].col)
 				tempList.push_back(simulateMove(startPt, validEndpts[i], boardState));
 		}
 	}
 
+	//cout << "knight passed" << endl;
 	return tempList;
 }
 
@@ -239,6 +243,7 @@ vector<vector<vector<Piece>>> AI::bishopMoves(vector<vector<Piece>> boardState, 
 		endPt.col -= 1;
 	}
 
+	//cout << "bids passed" << endl;
 	return tempList;
 
 }
@@ -252,6 +257,8 @@ vector<vector<vector<Piece>>> AI::queenMoves(vector<vector<Piece>> boardState, P
 	for (int i = 0; i < temp.size(); i++) {
 		tempList.push_back(temp[i]);
 	}
+	/*
+	cout << "queen passed" << endl;*/
 
 	return tempList;
 }
@@ -271,12 +278,16 @@ vector<vector<vector<Piece>>> AI::kingMoves(vector<vector<Piece>> boardState, Pi
 	validEndpts.push_back(Point(startPt.row - 1, startPt.col - 2));
 
 	for (int i = 0; i < validEndpts.size(); i++) {
+		if (!curPiece.checkBounds(validEndpts[i])) {
+			continue;
+		}
 		if (curPiece.movePiece(startPt, validEndpts[i], boardState)) {
 			if (startPt.row != validEndpts[i].row && startPt.col != validEndpts[i].col)
 				tempList.push_back(simulateMove(startPt, validEndpts[i], boardState));
 		}
 	}
 
+	//cout << "king passed" << endl;
 	return tempList;
 
 }
@@ -293,6 +304,7 @@ vector<vector<vector<Piece>>> AI::pawnMoves(vector<vector<Piece>> boardState, Pi
 		}
 	}
 
+	//cout << "pawn passed" << endl;
 	return tempList;
 }
 

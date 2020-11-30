@@ -68,7 +68,6 @@ Color Piece::returnColor() {
 bool Piece::movePiece(Point startPoint, Point endPoint, vector<vector<Piece>> boardCopy) {
 
 	this->boardCopy = boardCopy;
-
 	//break apart into separate methods to handle movement validation
 	if (piece == Type::ROOK)
 		return rookMove(startPoint, endPoint);
@@ -106,6 +105,7 @@ bool Piece::rookMove(Point startPoint, Point endPoint) {
 	if (rowDif < 0) {
 		for (int r = startPoint.row; r <= endPoint.row; r++) {
 			Piece alongPiece = boardCopy[r][startPoint.col];
+
 			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
 				return false;
 			}
@@ -138,7 +138,6 @@ bool Piece::rookMove(Point startPoint, Point endPoint) {
 			}
 		}
 	}
-
 	return true;
 
 }
