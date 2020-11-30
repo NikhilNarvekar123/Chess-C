@@ -4,8 +4,6 @@
 struct Point {
 	int row;
 	int col;
-	bool valid = true;
-	int value;
 	Point() {}
 	Point(int r, int c) : row{ r }, col{ c } {}
 };

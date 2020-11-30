@@ -12,16 +12,12 @@ class Board {
 public:
 
 	Board();
-
-	// Moves given piece from startposition to endposition
-	int movePiece(string startPosition, string endPosition, int playerID);
-
+	bool checkBounds(Point p);
 	void initBoard();
 	void printBoard();
 
+	int movePiece(string startPosition, string endPosition, Color playerColor);
 	int checkWin();
-
-	vector<vector<Piece>> returnBoard();
 
 private:
 
@@ -31,13 +27,5 @@ private:
 	// Labels to print out while board is being printed
 	vector<string> boardLabelsX = { "A","B", "C", "D", "E", "F","G","H" };
 	vector<string> boardLabelsY = { "8", "7", "6", "5", "4", "3", "2", "1" };
-
-};
-
-
-
-
-
-
 
 };

@@ -3,12 +3,17 @@
 #define WHITE_SQUARE 0xDB
 #define BLACK_SQUARE 0xFF
 
-// Initializes board to default state
 Board::Board() {
 	initBoard();
 }
 
-// Initializes board to default state
+bool Piece::checkBounds(Point p) {
+	if (!(p.row >= 0 && p.row <= 7))
+	return false;
+	if (!(p.col >= 0 && p.col <= 7))
+	return false;
+}
+
 void Board::initBoard() {
 	Board::curBoard = { {Piece(Type::ROOK, Color::BLACK), Piece(Type::KNIGHT, Color::BLACK), Piece(Type::BISHOP, Color::BLACK),
 		   Piece(Type::KING, Color::BLACK), Piece(Type::QUEEN, Color::BLACK), Piece(Type::BISHOP, Color::BLACK),
@@ -28,7 +33,6 @@ void Board::initBoard() {
 		   Piece(Type::KNIGHT, Color::WHITE), Piece(Type::ROOK, Color::WHITE)} };
 }
 
-// Prints board to console
 void Board::printBoard() {
 	cout << endl << endl;
 	for (int i = 0; i < 8; i++) {
@@ -43,14 +47,13 @@ void Board::printBoard() {
 		cout << endl << endl;
 	}
 	cout << endl;
-
 }
 
 
 int Board::movePiece(Point startPt, Point endPt, Color playerColor) {
 
-	Piece startPiece = curBoard[startPoint.row][startPoint.col];
-	Piece endPiece = curBoard[endPoint.row][endPoint.col];
+	Piece startPiece = curBoard[startPt.row][startPt.col];
+	Piece endPiece = curBoard[endPt.row][endPt.col];
 
 	if (startPiece.returnType() == Type::EMPTY)
 		return -1;
@@ -61,80 +64,33 @@ int Board::movePiece(Point startPt, Point endPt, Color playerColor) {
 
 	bool validMove = false;
 
-	if (startPiece.returnType() == Type::ROOK)
-		validMove = startPiece.rookMove(startPt, endPt);
+	switch (startPiece) {
+	case Type::ROOK:
+		validMove = startPiece.rookMove(startPt, endPt, curBoard);
+	case Type::KNIGHT:
+		validMove = startPiece.knightMove(startPt, endPt, curBoard);
+	case Type::BISHOP:
+		validMove = startPiece.bishopMove(startPt, endPt, curBoard);
+	case Type::KING:
+		validMove = startPiece.kingMove(startPt, endPt, curBoard);
+	case Type::QUEEN:
+		validMove = startPiece.queenMove(startPt, endPt, curBoard);
+	case Type::PAWN:
+		validMove = startPiece.pawnMove(startPt, endPt, curBoard);
+	default:
+		return "EMPTY";
+	}
 
+	curBoard[endPt.row][endPt.col] = startPiece;
+	curBoard[startPt.row][startPt.col] = Piece();
 
-	if (validMove && endPiece.returnType() == Type::EMPTY) {
-		// If valid move to empty location, transfer board locations and output results
-		curBoard[endPoint.row][endPoint.col] = startPiece;
-		curBoard[startPoint.row][startPoint.col] = Piece();
-		cout << startPiece.returnName() << " moved!" << endl;
+	if (validMove && endPiece.returnType() == Type::EMPTY)
 		return 0;
-	}
-	else if (validMove && endPiece.returnType() != Type::EMPTY) {
-		// If valid move to filled location, transfer board locations and output results
-		curBoard[endPoint.row][endPoint.col] = startPiece;
-		curBoard[startPoint.row][startPoint.col] = Piece();
-		cout << startPiece.returnName() << " takes " << endPiece.returnName() << "!" << endl;
+	else if (validMove && endPiece.returnType() != Type::EMPTY)
 		return 1;
-	}
+	else
+		return -1;
 
-	return -1;
-}
-
-// Translates user input from 'A1' to actual board position
-Point Board::translateInput(string input) {
-
-	int tempRow;
-	int tempCol;
-
-	// A-H is 0-7 position, 8-1 is 0-7 position
-	for (int i = 0; i < 8; i++) {
-		if (input.substr(0, 1) == boardLabelsX[i])
-			tempCol = i;
-		if (input.substr(1, 1) == boardLabelsY[i])
-			tempRow = i;
-	}
-
-	Point p;
-	p.row = tempRow;
-	p.col = tempCol;
-
-	// If end or start point out of grid, notify main method
-	if (!(tempRow >= 0 && tempRow <= 7))
-		p.valid = false;
-	if (!(tempCol >= 0 && tempCol <= 7))
-		p.valid = false;
-
-	return p;
-}
-
-void Board::setBoard(vector<vector<Piece>> newBoard) {
-	curBoard = newBoard;
-}
-
-int Board::movePieceAI(Point startPt, Point endpt) {
-
-	Piece startPiece = curBoard[startPt.row][startPt.col];
-	Piece endPiece = curBoard[endpt.row][endpt.col];
-
-	if (endPiece.returnType() == Type::EMPTY) {
-		// If valid move to empty location, transfer board locations and output results
-		curBoard[endpt.row][endpt.col] = startPiece;
-		curBoard[startPt.row][startPt.col] = Piece();
-		cout << startPiece.returnName() << " moved!" << endl;
-		return 0;
-	}
-	else if (endPiece.returnType() != Type::EMPTY) {
-		// If valid move to filled location, transfer board locations and output results
-		curBoard[endpt.row][endpt.col] = startPiece;
-		curBoard[startPt.row][startPt.col] = Piece();
-		cout << startPiece.returnName() << " takes " << endPiece.returnName() << "!" << endl;
-		return 1;
-	}
-
-	return -1;
 }
 
 int Board::checkWin() {
