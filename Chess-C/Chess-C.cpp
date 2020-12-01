@@ -110,7 +110,7 @@ int main()
 	cout << "b. 1-player (n/a at the time!)" << endl;
 	cout << "c. 0-player (n/a at the time!)" << endl << endl;
 
-	string userIn = "b"; //for debug
+	string userIn = "a"; //for debug
 	bool valid = false;
 
 	/*while (!valid) {

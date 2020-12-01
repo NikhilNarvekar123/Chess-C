@@ -35,7 +35,7 @@ Point BoardManager::translateInput(string input) {
 
 	// A-H is 0-7 position, 8-1 is 0-7 position
 	for (int i = 0; i < 8; i++) {
-		if (input.substr(0, 1) == boardLabelsX[i])
+		if (input.substr(0, 1) == boardLabelsX[i] or input.substr(0,1) == boardLabelsX2[i])
 			tempCol = i;
 		if (input.substr(1, 1) == boardLabelsY[i])
 			tempRow = i;

@@ -16,9 +16,10 @@ void Board::setBoard(vector<vector<Piece>> board) {
 
 bool Board::checkBounds(Point p) {
 	if (!(p.row >= 0 && p.row <= 7))
-	return false;
+		return false;
 	if (!(p.col >= 0 && p.col <= 7))
-	return false;
+		return false;
+	return true;
 }
 
 void Board::initBoard() {
@@ -74,8 +75,47 @@ Piece Board::movePiece(Point startPt, Point endPt, Color playerColor) {
 		return Piece(-1);
 	if (startPt.row == endPt.row && startPt.col == endPt.col)
 		return Piece(-1);
-
+	
 	vector<Point> validMoves = startPiece.generateMoves(*this);
+	
+	// for testing purposes prints out all moves on given board
+	/*for (int r = 0; r < 8; r++) {
+		for (int c = 0; c < 8; c++) {
+			vector<Point> moves = curBoard[r][c].generateMoves(*this);
+			string cold;
+
+			switch (curBoard[r][c].returnColor()) {
+			case Color::EMPTY:
+				cold = "empty";
+				break;
+			case Color::WHITE:
+				cold = "white";
+				break;
+			case Color::BLACK:
+				cold = "black";
+				break;
+			}
+
+			string s = "";
+			switch (curBoard[r][c].getStatus()) {
+			case Status::EMPTY:
+				s = "empty";
+				break;
+			case Status::INGAME:
+				s = "ingame";
+				break;
+			case Status::SPAWN:
+				s = "spawn";
+				break;
+			}
+
+			cout << curBoard[r][c].returnBoardName() << " " << cold << " " << s <<  8 - curBoard[r][c].getLocation().row << curBoard[r][c].getLocation().col << endl;
+			for (int i = 0; i < moves.size(); i++) {
+				cout << 8 - moves[i].row << "//" << moves[i].col << "    " << endl;
+			}
+			cout << endl;
+		}
+	}*/
 
 	bool validMatch = false;
 	for (Point validMove : validMoves) {
@@ -87,8 +127,12 @@ Piece Board::movePiece(Point startPt, Point endPt, Color playerColor) {
 	
 	// if user-endpt was in the valid moveset, make move
 	if (validMatch) {
+		startPiece.setLocation(Point(endPt.row, endPt.col));
+		startPiece.setStatus(Status::INGAME);
 		curBoard[endPt.row][endPt.col] = startPiece;
-		curBoard[startPt.row][startPt.col] = Piece();
+		Piece replacePiece;
+		replacePiece.setLocation(Point(startPt.row, endPt.col));
+		curBoard[startPt.row][startPt.col] = replacePiece;
 	}
 	else {
 		// otherwise, return an invalid piece holder

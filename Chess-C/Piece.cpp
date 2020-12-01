@@ -92,7 +92,6 @@ Color Piece::returnColor() {
 	return this->color;
 }
 
-
 vector<Point> Piece::generateMoves(Board board) {
 
 	vector<Point> validMoves;
@@ -100,18 +99,22 @@ vector<Point> Piece::generateMoves(Board board) {
 	switch (piece) {
 	case Type::ROOK:
 		validMoves = rookMovesGen(board);
+		break;
 	case Type::KNIGHT:
 		validMoves = knightMovesGen(board);
+		break;
 	case Type::BISHOP:
 		validMoves = bishopMovesGen(board);
+		break;
 	case Type::KING:
 		validMoves = kingMovesGen(board);
+		break;
 	case Type::QUEEN:
 		validMoves = queenMovesGen(board);
+		break;
 	case Type::PAWN:
 		validMoves = pawnMovesGen(board);
-	default:
-		validMoves = {};
+		break;
 	}
 
 	return validMoves;
@@ -130,8 +133,8 @@ vector<Point> Piece::rookMovesGen(Board board) {
 		if (otherPiece.returnType() != Type::EMPTY) {
 			if (otherPiece.returnColor() != color) {
 				validMoves.push_back(Point(r, curCol));
-				break;
 			}
+			break;
 		}
 		else {
 			validMoves.push_back(Point(r, curCol));
@@ -143,8 +146,8 @@ vector<Point> Piece::rookMovesGen(Board board) {
 		if (otherPiece.returnType() != Type::EMPTY) {
 			if (otherPiece.returnColor() != color) {
 				validMoves.push_back(Point(r, curCol));
-				break;
 			}
+			break;
 		}
 		else {
 			validMoves.push_back(Point(r, curCol));
@@ -156,8 +159,8 @@ vector<Point> Piece::rookMovesGen(Board board) {
 		if (otherPiece.returnType() != Type::EMPTY) {
 			if (otherPiece.returnColor() != color) {
 				validMoves.push_back(Point(curRow, c));
-				break;
 			}
+			break;
 		}
 		else {
 			validMoves.push_back(Point(curRow, c));
@@ -169,8 +172,8 @@ vector<Point> Piece::rookMovesGen(Board board) {
 		if (otherPiece.returnType() != Type::EMPTY) {
 			if (otherPiece.returnColor() != color) {
 				validMoves.push_back(Point(curRow, c));
-				break;
 			}
+			break;
 		}
 		else {
 			validMoves.push_back(Point(curRow, c));
@@ -196,7 +199,7 @@ vector<Point> Piece::knightMovesGen(Board board) {
 	validMoves.push_back(Point(curRow - 1, curCol - 2));
 	validMoves.push_back(Point(curRow - 1, curCol + 2));
 
-	for (int i = 0; i < validMoves.size(); i++) {
+	for (int i = validMoves.size() - 1; i >= 0; i--) {
 		if (!board.checkBounds(validMoves[i]))
 			validMoves.erase(validMoves.begin() + i);
 		else if (board.getPiece(validMoves[i].row, validMoves[i].col).returnColor() == color)
@@ -225,8 +228,8 @@ vector<Point> Piece::bishopMovesGen(Board board) {
 		if (otherPiece.returnType() != Type::EMPTY) {
 			if (otherPiece.returnColor() != color) {
 				validMoves.push_back(Point(r, tempCol));
-				break;
 			}
+			break;
 		}
 		else {
 			validMoves.push_back(Point(r, tempCol));
@@ -246,8 +249,8 @@ vector<Point> Piece::bishopMovesGen(Board board) {
 		if (otherPiece.returnType() != Type::EMPTY) {
 			if (otherPiece.returnColor() != color) {
 				validMoves.push_back(Point(r, tempCol));
-				break;
 			}
+			break;
 		}
 		else {
 			validMoves.push_back(Point(r, tempCol));
@@ -267,8 +270,8 @@ vector<Point> Piece::bishopMovesGen(Board board) {
 		if (otherPiece.returnType() != Type::EMPTY) {
 			if (otherPiece.returnColor() != color) {
 				validMoves.push_back(Point(r, tempCol));
-				break;
 			}
+			break;
 		}
 		else {
 			validMoves.push_back(Point(r, tempCol));
@@ -288,8 +291,8 @@ vector<Point> Piece::bishopMovesGen(Board board) {
 		if (otherPiece.returnType() != Type::EMPTY) {
 			if (otherPiece.returnColor() != color) {
 				validMoves.push_back(Point(r, tempCol));
-				break;
 			}
+			break;
 		}
 		else {
 			validMoves.push_back(Point(r, tempCol));
@@ -317,7 +320,7 @@ vector<Point> Piece::kingMovesGen(Board board) {
 	validMoves.push_back(Point(curRow - 1, curCol - 2));
 
 
-	for (int i = 0; i < validMoves.size(); i++) {
+	for (int i = validMoves.size() - 1; i >= 0; i--) {
 		if (!board.checkBounds(validMoves[i]))
 			validMoves.erase(validMoves.begin() + i);
 		else if (board.getPiece(validMoves[i].row, validMoves[i].col).returnColor() == color)
@@ -366,7 +369,6 @@ vector<Point> Piece::pawnMovesGen(Board board) {
 				if (board.checkBounds(Point(curRow + 2, curCol))) {
 					if (status == Status::SPAWN && board.getPiece(curRow + 2, curCol).returnType() == Type::EMPTY) {
 						validMoves.push_back(Point(curRow + 2, curCol));
-						status = Status::INGAME;
 					}
 				}
 			}
@@ -374,7 +376,7 @@ vector<Point> Piece::pawnMovesGen(Board board) {
 
 	}
 	else {
-
+		
 		if (board.checkBounds(Point(curRow - 1, curCol + 1))) {
 			if (board.getPiece(curRow - 1, curCol + 1).returnColor() == Color::BLACK)
 				validMoves.push_back(Point(curRow - 1, curCol + 1));
@@ -386,13 +388,12 @@ vector<Point> Piece::pawnMovesGen(Board board) {
 		}
 
 		if (board.checkBounds(Point(curRow - 1, curCol))) {
+
 			if (board.getPiece(curRow - 1, curCol).returnType() == Type::EMPTY) {
 				validMoves.push_back(Point(curRow - 1, curCol));
-
 				if (board.checkBounds(Point(curRow - 2, curCol))) {
-					if (status == Status::SPAWN && board.getPiece(curRow - 2, curCol).returnType() == Type::EMPTY) {
+					if (this->status == Status::SPAWN && board.getPiece(curRow - 2, curCol).returnType() == Type::EMPTY) {
 						validMoves.push_back(Point(curRow - 2, curCol));
-						status = Status::INGAME;
 					}
 				}
 			}
