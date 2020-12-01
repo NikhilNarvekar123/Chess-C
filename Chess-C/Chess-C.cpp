@@ -1,9 +1,7 @@
 
 #include <iostream>
 #include <string>
-#include <sstream>
-#include <regex>
-#include "Board.h"
+#include "Board_Piece.h"
 #include "BoardManager.h"
 #include "AI.h"
 
@@ -91,7 +89,7 @@ void onePlayer() {
 		// add logic to check if game is over
 
 		cout << "AI is making their move! Analyzing board..." << endl;
-		ai.makeMove(board);
+		ai.makeMove(board, "black");
 		cout << "AI, has moved. " << endl;
 		board.printBoard();
 

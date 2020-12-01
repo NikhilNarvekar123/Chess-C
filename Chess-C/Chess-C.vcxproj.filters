@@ -27,7 +27,7 @@
     <ClCompile Include="BoardManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Board.cpp">
+    <ClCompile Include="Board_Piece.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,10 +41,10 @@
     <ClInclude Include="BoardManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Board.h">
+    <ClInclude Include="CommonData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommonData.h">
+    <ClInclude Include="Board_Piece.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

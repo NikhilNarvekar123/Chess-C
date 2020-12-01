@@ -1,5 +1,4 @@
-#pragma once
-#include "Piece.h";
+#include "Board_Piece.h";
 
 // empty location
 Piece::Piece() {
@@ -7,6 +6,7 @@ Piece::Piece() {
 	color = Color::EMPTY;
 	status = Status::EMPTY;
 	curLocation = Point();
+	valid = true;
 }
 
 // creates a piece
@@ -14,6 +14,15 @@ Piece::Piece(Type piece, Color color) {
 	this->piece = piece;
 	this->color = color;
 	status = Status::SPAWN;
+	valid = true;
+}
+
+Piece::Piece(int error) {
+	valid = false;
+}
+
+bool Piece::isValid() {
+	return valid;
 }
 
 // updates/retrieves location of piece
@@ -22,6 +31,13 @@ void Piece::setLocation(Point newLoc) {
 }
 Point Piece::getLocation() {
 	return curLocation;
+}
+
+void Piece::setStatus(Status newStatus) {
+	status = newStatus;
+}
+Status Piece::getStatus() {
+	return status;
 }
 
 // returns display name of piece ('rb') and actual name
@@ -77,198 +93,313 @@ Color Piece::returnColor() {
 }
 
 
-bool Piece::rookMove(Point startPoint, Point endPoint, Board board) {
+vector<Point> Piece::generateMoves(Board board) {
 
-	bool firstCheck = false;
+	vector<Point> validMoves;
 
-	if (abs(startPoint.row - endPoint.row) == 0)
-		firstCheck = true;
-	else if (abs(startPoint.col - endPoint.col) == 0)
-		firstCheck = true;
-
-	if (!firstCheck) {
-		return false;
+	switch (piece) {
+	case Type::ROOK:
+		validMoves = rookMovesGen(board);
+	case Type::KNIGHT:
+		validMoves = knightMovesGen(board);
+	case Type::BISHOP:
+		validMoves = bishopMovesGen(board);
+	case Type::KING:
+		validMoves = kingMovesGen(board);
+	case Type::QUEEN:
+		validMoves = queenMovesGen(board);
+	case Type::PAWN:
+		validMoves = pawnMovesGen(board);
+	default:
+		validMoves = {};
 	}
 
-	int rowDif = startPoint.row - endPoint.row;
-	int colDif = startPoint.col - endPoint.col;
-
-	//downward
-	if (rowDif < 0) {
-		for (int r = startPoint.row; r <= endPoint.row; r++) {
-			Piece alongPiece = board[r][startPoint.col];
-
-			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
-				return false;
-			}
-		}
-	}
-	//upward
-	if (rowDif > 0) {
-		for (int r = startPoint.row; r >= endPoint.row; r--) {
-			Piece alongPiece = board[r][startPoint.col];
-			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
-				return false;
-			}
-		}
-	}
-	//right
-	if (colDif < 0) {
-		for (int c = startPoint.col; c <= endPoint.col; c++) {
-			Piece alongPiece = board[startPoint.row][c];
-			if (alongPiece.returnType() != Type::EMPTY && c != endPoint.col) {
-				return false;
-			}
-		}
-	}
-	//left
-	if (colDif > 0) {
-		for (int c = startPoint.col; c >= endPoint.col; c--) {
-			Piece alongPiece = board[startPoint.row][c];
-			if (alongPiece.returnType() != Type::EMPTY && c != endPoint.col) {
-				return false;
-			}
-		}
-	}
-	return true;
+	return validMoves;
 
 }
 
-bool Piece::knightMove(Point startPoint, Point endPoint, Board board) {
+vector<Point> Piece::rookMovesGen(Board board) {
 
-	bool firstCheck = false;
-	if (abs(startPoint.row - endPoint.row) == 2 && abs(startPoint.col - endPoint.col) == 1)
-		firstCheck = true;
-	else if (abs(startPoint.row - endPoint.row) == 1 && abs(startPoint.col - endPoint.col) == 2)
-		firstCheck = true;
+	vector<Point> validMoves;
 
-	return firstCheck;
-}
+	int curRow = curLocation.row;
+	int curCol = curLocation.col;
 
-bool Piece::bishopMove(Point startPoint, Point endPoint, Board board) {
-
-	bool firstCheck = false;
-	if (abs(startPoint.row - endPoint.row) == abs(startPoint.col - endPoint.col))
-		firstCheck = true;
-
-	if (!firstCheck) {
-		return false;
+	for (int r = curRow + 1; r < 8; r++) {
+		Piece otherPiece = board.getPiece(r, curCol);
+		if (otherPiece.returnType() != Type::EMPTY) {
+			if (otherPiece.returnColor() != color) {
+				validMoves.push_back(Point(r, curCol));
+				break;
+			}
+		}
+		else {
+			validMoves.push_back(Point(r, curCol));
+		}
 	}
 
-	int rowDif = startPoint.row - endPoint.row;
-	int colDif = startPoint.col - endPoint.col;
+	for (int r = curRow - 1; r >= 0; r--) {
+		Piece otherPiece = board.getPiece(r, curCol);
+		if (otherPiece.returnType() != Type::EMPTY) {
+			if (otherPiece.returnColor() != color) {
+				validMoves.push_back(Point(r, curCol));
+				break;
+			}
+		}
+		else {
+			validMoves.push_back(Point(r, curCol));
+		}
+	}
+
+	for (int c = curCol + 1; c < 8; c++) {
+		Piece otherPiece = board.getPiece(curRow, c);
+		if (otherPiece.returnType() != Type::EMPTY) {
+			if (otherPiece.returnColor() != color) {
+				validMoves.push_back(Point(curRow, c));
+				break;
+			}
+		}
+		else {
+			validMoves.push_back(Point(curRow, c));
+		}
+	}
+
+	for (int c = curCol - 1; c >= 0; c--) {
+		Piece otherPiece = board.getPiece(curRow, c);
+		if (otherPiece.returnType() != Type::EMPTY) {
+			if (otherPiece.returnColor() != color) {
+				validMoves.push_back(Point(curRow, c));
+				break;
+			}
+		}
+		else {
+			validMoves.push_back(Point(curRow, c));
+		}
+	}
+
+	return validMoves;
+}
+
+vector<Point> Piece::knightMovesGen(Board board) {
+	
+	vector<Point> validMoves;
+
+	int curRow = curLocation.row;
+	int curCol = curLocation.col;
+
+	validMoves.push_back(Point(curRow + 2, curCol + 1));
+	validMoves.push_back(Point(curRow + 2, curCol - 1));
+	validMoves.push_back(Point(curRow - 2, curCol - 1));
+	validMoves.push_back(Point(curRow - 2, curCol + 1));
+	validMoves.push_back(Point(curRow + 1, curCol - 2));
+	validMoves.push_back(Point(curRow + 1, curCol + 2));
+	validMoves.push_back(Point(curRow - 1, curCol - 2));
+	validMoves.push_back(Point(curRow - 1, curCol + 2));
+
+	for (int i = 0; i < validMoves.size(); i++) {
+		if (!board.checkBounds(validMoves[i]))
+			validMoves.erase(validMoves.begin() + i);
+		else if (board.getPiece(validMoves[i].row, validMoves[i].col).returnColor() == color)
+			validMoves.erase(validMoves.begin() + i);
+	}
+
+	return validMoves;
+}
+
+vector<Point> Piece::bishopMovesGen(Board board) {
+
+	vector<Point> validMoves;
+
+	int curRow = curLocation.row;
+	int curCol = curLocation.col;
+	int tempCol = curCol;
 
 	//southeast
-	if (rowDif < 0 && colDif < 0) {
-		int c = startPoint.col;
-		for (int r = startPoint.row; r <= endPoint.row; r++) {
-			Piece alongPiece = board[r][c];
-			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
-				return false;
+	for (int r = curRow + 1; r < 8; r++) {
+		tempCol += 1;
+		if (!board.checkBounds(Point(r, tempCol)))
+			break;
+		
+		Piece otherPiece = board.getPiece(r, tempCol);
+
+		if (otherPiece.returnType() != Type::EMPTY) {
+			if (otherPiece.returnColor() != color) {
+				validMoves.push_back(Point(r, tempCol));
+				break;
 			}
-			c++;
+		}
+		else {
+			validMoves.push_back(Point(r, tempCol));
 		}
 	}
+	
+	tempCol = curCol;
+
 	//southwest
-	if (rowDif < 0 && colDif > 0) {
-		int c = startPoint.col;
-		for (int r = startPoint.row; r <= endPoint.row; r++) {
-			Piece alongPiece = board[r][c];
-			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
-				return false;
+	for (int r = curRow + 1; r < 8; r++) {
+		tempCol -= 1;
+		if (!board.checkBounds(Point(r, tempCol)))
+			break;
+
+		Piece otherPiece = board.getPiece(r, tempCol);
+
+		if (otherPiece.returnType() != Type::EMPTY) {
+			if (otherPiece.returnColor() != color) {
+				validMoves.push_back(Point(r, tempCol));
+				break;
 			}
-			c--;
+		}
+		else {
+			validMoves.push_back(Point(r, tempCol));
 		}
 	}
+
+	tempCol = curCol;
+
 	//northeast
-	if (rowDif > 0 && colDif < 0) {
-		int c = startPoint.col;
-		for (int r = startPoint.row; r >= endPoint.row; r--) {
-			Piece alongPiece = board[r][c];
-			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
-				return false;
+	for (int r = curRow - 1; r >= 0; r--) {
+		tempCol += 1;
+		if (!board.checkBounds(Point(r, tempCol)))
+			break;
+
+		Piece otherPiece = board.getPiece(r, tempCol);
+
+		if (otherPiece.returnType() != Type::EMPTY) {
+			if (otherPiece.returnColor() != color) {
+				validMoves.push_back(Point(r, tempCol));
+				break;
 			}
-			c++;
+		}
+		else {
+			validMoves.push_back(Point(r, tempCol));
 		}
 	}
+
+	tempCol = curCol;
+
 	//northwest
-	if (rowDif > 0 && colDif > 0) {
-		int c = startPoint.col;
-		for (int r = startPoint.row; r >= endPoint.row; r--) {
-			Piece alongPiece = board[r][c];
-			if (alongPiece.returnType() != Type::EMPTY && r != endPoint.row) {
-				return false;
+	for (int r = curRow - 1; r >= 0; r--) {
+		tempCol -= 1;
+		if (!board.checkBounds(Point(r, tempCol)))
+			break;
+
+		Piece otherPiece = board.getPiece(r, tempCol);
+
+		if (otherPiece.returnType() != Type::EMPTY) {
+			if (otherPiece.returnColor() != color) {
+				validMoves.push_back(Point(r, tempCol));
+				break;
 			}
-			c--;
+		}
+		else {
+			validMoves.push_back(Point(r, tempCol));
 		}
 	}
 
-	return true;
+	return validMoves;
+
 }
 
-bool Piece::kingMove(Point startPoint, Point endPoint, Board board) {
+vector<Point> Piece::kingMovesGen(Board board) {
+	
+	vector<Point> validMoves;
 
-	bool firstCheck = false;
-	if (abs(startPoint.row - endPoint.row) <= 1 && abs(startPoint.col - endPoint.col) <= 1)
-		firstCheck = true;
+	int curRow = curLocation.row;
+	int curCol = curLocation.col;
 
-	return firstCheck;
+	validMoves.push_back(Point(curRow + 1, curCol));
+	validMoves.push_back(Point(curRow - 1, curCol));
+	validMoves.push_back(Point(curRow, curCol + 1));
+	validMoves.push_back(Point(curRow, curCol - 1));
+	validMoves.push_back(Point(curRow + 1, curCol + 1));
+	validMoves.push_back(Point(curRow - 1, curCol + 2));
+	validMoves.push_back(Point(curRow + 1, curCol - 2));
+	validMoves.push_back(Point(curRow - 1, curCol - 2));
+
+
+	for (int i = 0; i < validMoves.size(); i++) {
+		if (!board.checkBounds(validMoves[i]))
+			validMoves.erase(validMoves.begin() + i);
+		else if (board.getPiece(validMoves[i].row, validMoves[i].col).returnColor() == color)
+			validMoves.erase(validMoves.begin() + i);
+	}
+
+	return validMoves;
 }
 
-bool Piece::queenMove(Point startPoint, Point endPoint, Board board) {
+vector<Point> Piece::queenMovesGen(Board board) {
+	vector<Point> validMovesBishop;
+	vector<Point> validMovesQueen;
 
-	bool firstCheck = bishopMove(startPoint, endPoint);
-	if (firstCheck == false)
-		firstCheck = rookMove(startPoint, endPoint);
+	validMovesBishop = bishopMovesGen(board);
+	validMovesQueen = rookMovesGen(board);
+	for (int i = 0; i < validMovesBishop.size(); i++) {
+		validMovesQueen.push_back(validMovesBishop[i]);
+	}
 
-	return firstCheck;
+	return validMovesQueen;
 }
 
-bool Piece::pawnMove(Point startPoint, Point endPoint, Board board) {
+vector<Point> Piece::pawnMovesGen(Board board) {
 
-	bool firstCheck;
-	int rowDif = startPoint.row - endPoint.row;
-	int colDif = startPoint.col - endPoint.col;
+	vector<Point> validMoves;
 
-	// If moving columns without taking piece, return false
-	if (colDif != 0 && abs(colDif) != 1)
-		return false;
+	int curRow = curLocation.row;
+	int curCol = curLocation.col;
 
-	// If moving in opposite direction of color, return false
-	if (color == Color::BLACK && !(rowDif < 0))
-		return false;
-	if (color == Color::WHITE && !(rowDif > 0))
-		return false;
+	if (color == Color::BLACK) {
 
-	// If moving 1 space up/down
-	if (abs(rowDif) == 1) {
+		if (board.checkBounds(Point(curRow + 1, curCol + 1))) {
+			if (board.getPiece(curRow + 1, curCol + 1).returnColor() == Color::WHITE)
+				validMoves.push_back(Point(curRow + 1, curCol + 1));
+		}
 
-		status = Status::INGAME;
+		if (board.checkBounds(Point(curRow + 1, curCol - 1))) {
+			if (board.getPiece(curRow + 1, curCol - 1).returnColor() == Color::WHITE)
+				validMoves.push_back(Point(curRow + 1, curCol - 1));
+		}
 
-		// If taking piece, then has to be non-empty space
-		if (abs(colDif) == 1) {
-			if (board[endPoint.row][endPoint.col].returnType() != Type::EMPTY) {
-				status = Status::INGAME;
-				return true;
+		if (board.checkBounds(Point(curRow + 1, curCol))) {
+			if (board.getPiece(curRow + 1, curCol).returnType() == Type::EMPTY) {
+				validMoves.push_back(Point(curRow + 1, curCol));
+
+				if (board.checkBounds(Point(curRow + 2, curCol))) {
+					if (status == Status::SPAWN && board.getPiece(curRow + 2, curCol).returnType() == Type::EMPTY) {
+						validMoves.push_back(Point(curRow + 2, curCol));
+						status = Status::INGAME;
+					}
+				}
 			}
-			else
-				return false;
-		}
-
-		// As long as space moving to is empty (and in same row)
-		if (board[endPoint.row][endPoint.col].returnType() == Type::EMPTY) {
-			status = Status::INGAME;
-			return true;
 		}
 
 	}
-	else if (abs(rowDif) == 2) {
-		// If spawn piece, moving two squares ahead is allowed
-		if (status == Status::SPAWN) {
-			status = Status::INGAME;
-			return true;
+	else {
+
+		if (board.checkBounds(Point(curRow - 1, curCol + 1))) {
+			if (board.getPiece(curRow - 1, curCol + 1).returnColor() == Color::BLACK)
+				validMoves.push_back(Point(curRow - 1, curCol + 1));
+		}
+
+		if (board.checkBounds(Point(curRow - 1, curCol - 1))) {
+			if (board.getPiece(curRow - 1, curCol - 1).returnColor() == Color::BLACK)
+				validMoves.push_back(Point(curRow - 1, curCol - 1));
+		}
+
+		if (board.checkBounds(Point(curRow - 1, curCol))) {
+			if (board.getPiece(curRow - 1, curCol).returnType() == Type::EMPTY) {
+				validMoves.push_back(Point(curRow - 1, curCol));
+
+				if (board.checkBounds(Point(curRow - 2, curCol))) {
+					if (status == Status::SPAWN && board.getPiece(curRow - 2, curCol).returnType() == Type::EMPTY) {
+						validMoves.push_back(Point(curRow - 2, curCol));
+						status = Status::INGAME;
+					}
+				}
+			}
 		}
 	}
 
-	return false;
+	return validMoves;
 }
+
+

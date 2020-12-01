@@ -1,5 +1,4 @@
-#pragma once
-#include "Board.h"
+#include "Board_Piece.h"
 #define WHITE_SQUARE 0xDB
 #define BLACK_SQUARE 0xFF
 
@@ -7,7 +6,15 @@ Board::Board() {
 	initBoard();
 }
 
-bool Piece::checkBounds(Point p) {
+vector<vector<Piece>> Board::returnBoard() {
+	return curBoard;
+}
+
+void Board::setBoard(vector<vector<Piece>> board) {
+	curBoard = board;
+}
+
+bool Board::checkBounds(Point p) {
 	if (!(p.row >= 0 && p.row <= 7))
 	return false;
 	if (!(p.col >= 0 && p.col <= 7))
@@ -31,6 +38,11 @@ void Board::initBoard() {
 		  {Piece(Type::ROOK, Color::WHITE), Piece(Type::KNIGHT, Color::WHITE), Piece(Type::BISHOP, Color::WHITE),
 		   Piece(Type::KING, Color::WHITE), Piece(Type::QUEEN, Color::WHITE), Piece(Type::BISHOP, Color::WHITE),
 		   Piece(Type::KNIGHT, Color::WHITE), Piece(Type::ROOK, Color::WHITE)} };
+	for (int r = 0; r < 8; r++) {
+		for (int c = 0; c < 8; c++) {
+			curBoard[r][c].setLocation(Point(r, c));
+		}
+	}
 }
 
 void Board::printBoard() {
@@ -49,48 +61,55 @@ void Board::printBoard() {
 	cout << endl;
 }
 
-
-int Board::movePiece(Point startPt, Point endPt, Color playerColor) {
+Piece Board::movePiece(Point startPt, Point endPt, Color playerColor) {
 
 	Piece startPiece = curBoard[startPt.row][startPt.col];
 	Piece endPiece = curBoard[endPt.row][endPt.col];
 
 	if (startPiece.returnType() == Type::EMPTY)
-		return -1;
+		return Piece(-1);
 	if (startPiece.returnColor() == Color::WHITE && playerColor != Color::WHITE)
-		return -1;
+		return Piece(-1);
 	if (startPiece.returnColor() == Color::BLACK && playerColor != Color::BLACK)
-		return -1;
+		return Piece(-1);
+	if (startPt.row == endPt.row && startPt.col == endPt.col)
+		return Piece(-1);
 
-	bool validMove = false;
+	vector<Point> validMoves = startPiece.generateMoves(*this);
 
-	switch (startPiece) {
-	case Type::ROOK:
-		validMove = startPiece.rookMove(startPt, endPt, curBoard);
-	case Type::KNIGHT:
-		validMove = startPiece.knightMove(startPt, endPt, curBoard);
-	case Type::BISHOP:
-		validMove = startPiece.bishopMove(startPt, endPt, curBoard);
-	case Type::KING:
-		validMove = startPiece.kingMove(startPt, endPt, curBoard);
-	case Type::QUEEN:
-		validMove = startPiece.queenMove(startPt, endPt, curBoard);
-	case Type::PAWN:
-		validMove = startPiece.pawnMove(startPt, endPt, curBoard);
-	default:
-		return "EMPTY";
+	bool validMatch = false;
+	for (Point validMove : validMoves) {
+		if (endPt.row == validMove.row && endPt.col == validMove.col) {
+			validMatch = true;
+			break;
+		}
+	}
+	
+	// if user-endpt was in the valid moveset, make move
+	if (validMatch) {
+		curBoard[endPt.row][endPt.col] = startPiece;
+		curBoard[startPt.row][startPt.col] = Piece();
+	}
+	else {
+		// otherwise, return an invalid piece holder
+		return Piece(-1);
 	}
 
-	curBoard[endPt.row][endPt.col] = startPiece;
-	curBoard[startPt.row][startPt.col] = Piece();
+	// if user-endpt was occupied by enemy, then update taken piece
+	if (endPiece.returnType() != Type::EMPTY) {
+		endPiece.setLocation(Point(-1, -1));
+		endPiece.setStatus(Status::TAKEN);
+	}
 
-	if (validMove && endPiece.returnType() == Type::EMPTY)
-		return 0;
-	else if (validMove && endPiece.returnType() != Type::EMPTY)
-		return 1;
-	else
-		return -1;
+	// return either taken or empty location
+	return endPiece;
+}
 
+Piece Board::getPiece(int row, int col) {
+	bool valid = checkBounds(Point(row, col));
+	if (valid)
+		return curBoard[row][col];
+	return Piece(-1);
 }
 
 int Board::checkWin() {
