@@ -86,6 +86,7 @@ void onePlayer() {
 		cout << res << endl;
 		board.printBoard();
 
+		//TODO: IF PLAYER DID NOT MAKE A VALID MOVE MAKE THEM MOVE AGAIN
 		// add logic to check if game is over
 
 		cout << "AI is making their move! Analyzing board..." << endl;
@@ -110,7 +111,7 @@ int main()
 	cout << "b. 1-player (n/a at the time!)" << endl;
 	cout << "c. 0-player (n/a at the time!)" << endl << endl;
 
-	string userIn = "a"; //for debug
+	string userIn = "b"; //for debug
 	bool valid = false;
 
 	/*while (!valid) {

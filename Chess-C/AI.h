@@ -19,7 +19,7 @@ public:
 
 	void makeMove(Board &board, string aiColor);
 	vector<Board> generateMoves(Board board, Color color);
-	vector<int> returnValuation(Board board);
+	int returnValuation(Board board);
 
 private:
 	int runMinmax(Board loopboard, Color player, int curDepth, int maxDepth);

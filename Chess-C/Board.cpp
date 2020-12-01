@@ -156,7 +156,7 @@ Piece Board::getPiece(int row, int col) {
 	return Piece(-1);
 }
 
-int Board::checkWin() {
+Color Board::checkWin() {
 
 	bool blackHasKing = false;
 	bool whiteHasKing = false;
@@ -171,12 +171,12 @@ int Board::checkWin() {
 	}
 
 	if (!blackHasKing) {
-		return 1;
+		return Color::BLACK;
 	}
 	if (!whiteHasKing) {
-		return 2;
+		return Color::WHITE;
 	}
 
 	// checkmate functionality
-	return 0;
+	return Color::EMPTY;
 }

@@ -66,7 +66,7 @@ public:
 
 	Piece movePiece(Point startPt, Point endPt, Color playerColor);
 	Piece getPiece(int row, int col);
-	int checkWin();
+	Color checkWin();
 
 	vector<vector<Piece>> returnBoard();
 

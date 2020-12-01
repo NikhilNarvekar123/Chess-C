@@ -5,16 +5,20 @@
 void AI::makeMove(Board &board, string aiColor) {
 
 	Color color = (aiColor == "black") ? Color::BLACK : Color::WHITE;
+	Color otherColor = (aiColor == "black") ? Color::WHITE : Color::BLACK;
 
 	vector<Board> boardStates;
 	boardStates = generateMoves(board, color);
-
+	
 	int maxMoveVal = INT_MIN;
 	Board bestBoardState;
 	for (int i = 0; i < boardStates.size(); i++) {
-		//minmax
+		int val = runMinmax(boardStates[i], otherColor, 1, 3);
+		if (val > maxMoveVal) {
+			maxMoveVal = val;
+			bestBoardState = boardStates[i];
+		}
 	}
-
 	board.setBoard(bestBoardState.returnBoard());
 }
 
@@ -44,11 +48,47 @@ vector<Board> AI::generateMoves(Board board, Color color) {
 
 
 int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth) {
-	return 0;
+	
+	if (curDepth == maxDepth) {
+		return returnValuation(loopboard);
+	}
+	if (loopboard.checkWin() != Color::EMPTY) {
+		return returnValuation(loopboard);
+	}
+
+	if (player == Color::BLACK) {
+
+		vector<Board> boardStates;
+		boardStates = generateMoves(loopboard, player);
+
+		int maxMoveVal = INT_MIN;
+		for (int i = 0; i < boardStates.size(); i++) {
+			int val = runMinmax(boardStates[i], Color::WHITE, curDepth + 1, 3);
+			if (val > maxMoveVal)
+				maxMoveVal = val;
+		}
+		return maxMoveVal;
+	
+	}
+	else if (player == Color::WHITE) {
+		
+		vector<Board> boardStates;
+		boardStates = generateMoves(loopboard, player);
+
+		int minMoveVal = INT_MAX;
+		for (int i = 0; i < boardStates.size(); i++) {
+			int val = runMinmax(boardStates[i], Color::BLACK, curDepth + 1, 3);
+			if (val < minMoveVal)
+				minMoveVal = val;
+		}
+
+		return minMoveVal;
+	}
+
 }
 
 
-vector<int> AI::returnValuation(Board board) {
+int AI::returnValuation(Board board) {
 
 	int blackCount = 0;
 	int whiteCount = 0;
@@ -62,9 +102,16 @@ vector<int> AI::returnValuation(Board board) {
 		}
 	}
 	
+	Color winner = board.checkWin();
+	if(winner == Color::BLACK)
+		blackCount * 100;
+	if (winner == Color::WHITE)
+		whiteCount * 100;
+	
+
 	vector<int> values;
 	values.push_back(blackCount * 5);
 	values.push_back(whiteCount * 5);
 
-	return values;
+	return values[0] - values[1];
 }
