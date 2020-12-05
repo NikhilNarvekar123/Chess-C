@@ -99,7 +99,39 @@ void onePlayer() {
 }
 
 void zeroplayer() {
+	Board board;
+	BoardManager boardManager;
+	AI ai1;
+	AI ai2;
 
+	string userIn;
+	string startSquare;
+	string endSquare;
+
+	cout << "welcome to 0-player chess!" << endl;
+	cout << "the AI will play against another AI agent. Click enter to advance the AI turn." << endl;
+	board.printBoard();
+
+	while (userIn != "exit") {
+
+		cin.ignore();
+		cout << "AI is making their move! Analyzing board..." << endl;
+		ai1.makeMove(board, "white");
+		cout << "AI, has moved. " << endl;
+		board.printBoard();
+
+
+		//TODO: IF PLAYER DID NOT MAKE A VALID MOVE MAKE THEM MOVE AGAIN
+		// add logic to check if game is over
+		
+		cin.ignore();
+		cout << "AI is making their move! Analyzing board..." << endl;
+		ai2.makeMove(board, "black");
+		cout << "AI, has moved. " << endl;
+		board.printBoard();
+
+		// add logic to check if game is over
+	}
 }
 
 
@@ -111,10 +143,10 @@ int main()
 	cout << "b. 1-player (n/a at the time!)" << endl;
 	cout << "c. 0-player (n/a at the time!)" << endl << endl;
 
-	string userIn = "b"; //for debug
+	string userIn;
 	bool valid = false;
 
-	/*while (!valid) {
+	while (!valid) {
 		cin >> userIn;
 		char c = tolower(userIn.at(0));
 		if (userIn.size() == 1 && (c == 'a' || c == 'b' || c == 'c')) {
@@ -125,7 +157,7 @@ int main()
 		else {
 			cout << "invalid input entered! try again." << endl;
 		}
-	}*/
+	}
 
 	if (userIn == "a") {
 		twoPlayer();
