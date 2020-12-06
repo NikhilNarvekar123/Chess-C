@@ -9,11 +9,11 @@ void AI::makeMove(Board &board, string aiColor) {
 
 	vector<Board> boardStates;
 	boardStates = generateMoves(board, color);
-	
+
 	int maxMoveVal = INT_MIN;
 	Board bestBoardState;
 	for (int i = 0; i < boardStates.size(); i++) {
-		int val = runMinmax(boardStates[i], otherColor, 1, 3);
+		int val = runMinmax(boardStates[i], otherColor, 1, 5, INT_MIN, INT_MAX);
 		if (val > maxMoveVal) {
 			maxMoveVal = val;
 			bestBoardState = boardStates[i];
@@ -24,13 +24,13 @@ void AI::makeMove(Board &board, string aiColor) {
 
 
 vector<Board> AI::generateMoves(Board board, Color color) {
-	
+
 	vector<Board> boardStates;
 
 	for (int r = 0; r < 8; r++) {
 		for (int c = 0; c < 8; c++) {
 			Piece piece = board.getPiece(r, c);
-			
+
 			if (piece.returnColor() == color) {
 				vector<Point> pieceMoves = piece.generateMoves(board);
 				for (Point pieceMove : pieceMoves) {
@@ -47,8 +47,8 @@ vector<Board> AI::generateMoves(Board board, Color color) {
 }
 
 
-int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth) {
-	
+int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth, int alpha, int beta) {
+
 	if (curDepth == maxDepth) {
 		return returnValuation(loopboard);
 	}
@@ -63,23 +63,27 @@ int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth) {
 
 		int maxMoveVal = INT_MIN;
 		for (int i = 0; i < boardStates.size(); i++) {
-			int val = runMinmax(boardStates[i], Color::WHITE, curDepth + 1, 3);
-			if (val > maxMoveVal)
-				maxMoveVal = val;
+			int val = runMinmax(boardStates[i], Color::WHITE, curDepth + 1, 5, alpha, beta);
+			maxMoveVal = max(val, maxMoveVal);
+			alpha = max(alpha, maxMoveVal);
+			if(beta <= alpha)
+				break;
 		}
 		return maxMoveVal;
-	
+
 	}
 	else if (player == Color::WHITE) {
-		
+
 		vector<Board> boardStates;
 		boardStates = generateMoves(loopboard, player);
 
 		int minMoveVal = INT_MAX;
 		for (int i = 0; i < boardStates.size(); i++) {
-			int val = runMinmax(boardStates[i], Color::BLACK, curDepth + 1, 3);
-			if (val < minMoveVal)
-				minMoveVal = val;
+			int val = runMinmax(boardStates[i], Color::BLACK, curDepth + 1, 5);
+			minMoveVal = max(val, minMoveVal);
+			beta = max(beta, minMoveVal);
+			if(beta <= alpha)
+				break;
 		}
 
 		return minMoveVal;
@@ -95,23 +99,19 @@ int AI::returnValuation(Board board) {
 
 	for (int r = 0; r < 8; r++) {
 		for (int c = 0; c < 8; c++) {
-			if (board.getPiece(r, c).returnColor() == Color::BLACK)
-				blackCount++;
-			else if (board.getPiece(r,c).returnColor() == Color::WHITE)
-				whiteCount++;
+			Piece curPiece = board.getPiece(r,c);
+			if(curPiece.returnColor() == Color::WHITE)
+				whiteCount += -curPiece.returnValuation();
+			else
+				blackCount += curPiece.returnValuation();
 		}
 	}
-	
+
 	Color winner = board.checkWin();
 	if(winner == Color::BLACK)
-		blackCount * 100;
+		blackCount *= 100;
 	if (winner == Color::WHITE)
-		whiteCount * 100;
-	
+		whiteCount *= 100;
 
-	vector<int> values;
-	values.push_back(blackCount * 5);
-	values.push_back(whiteCount * 5);
-
-	return values[0] - values[1];
+	return blackCount - whiteCount;
 }

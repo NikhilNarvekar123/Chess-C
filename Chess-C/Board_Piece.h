@@ -29,7 +29,7 @@ public:
 	Color returnColor();
 	void setStatus(Status newStatus);
 	Status getStatus();
-
+	int returnValuation();
 	bool isValid();
 
 	vector<Point> generateMoves(Board board);
