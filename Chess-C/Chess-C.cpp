@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 #include "Board_Piece.h"
@@ -130,7 +129,7 @@ void zeroplayer() {
 		Color winner = board.checkWinPrint();
 		if (winner == Color::BLACK || winner == Color::WHITE)
 			break;
-		
+
 		cin.ignore();
 		cout << "AI is making their move! Analyzing board..." << endl;
 		ai2.makeMove(board, "black");
