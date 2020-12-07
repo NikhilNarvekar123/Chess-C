@@ -177,7 +177,7 @@ bool Board::isInCheckWhite(Piece whiteKing, Board givenBoard) {
 			break;
 		}
 	}
-	
+
 	// upward check
 	for (int r = kwRow; r >= 0; r--) {
 		Piece otherPiece = board[r][kwCol];
@@ -226,6 +226,8 @@ bool Board::isInCheckWhite(Piece whiteKing, Board givenBoard) {
 		if (kwRow == r)
 			continue;
 		tempCol++;
+		if (!checkBounds(Point(r, tempCol)))
+			break;
 
 		Piece otherPiece = board[r][tempCol];
 		if (otherPiece.returnColor() == Color::WHITE)
@@ -245,6 +247,8 @@ bool Board::isInCheckWhite(Piece whiteKing, Board givenBoard) {
 		if (kwRow == r)
 			continue;
 		tempCol++;
+		if (!checkBounds(Point(r, tempCol)))
+			break;
 
 		Piece otherPiece = board[r][tempCol];
 		if (otherPiece.returnColor() == Color::WHITE)
@@ -270,6 +274,8 @@ bool Board::isInCheckWhite(Piece whiteKing, Board givenBoard) {
 		if (kwRow == r)
 			continue;
 		tempCol--;
+		if (!checkBounds(Point(r, tempCol)))
+			break;
 
 		Piece otherPiece = board[r][tempCol];
 		if (otherPiece.returnColor() == Color::WHITE)
@@ -289,6 +295,8 @@ bool Board::isInCheckWhite(Piece whiteKing, Board givenBoard) {
 		if (kwRow == r)
 			continue;
 		tempCol--;
+		if (!checkBounds(Point(r, tempCol)))
+			break;
 
 		Piece otherPiece = board[r][tempCol];
 		if (otherPiece.returnColor() == Color::WHITE)
@@ -307,7 +315,7 @@ bool Board::isInCheckWhite(Piece whiteKing, Board givenBoard) {
 			break;
 		}
 	}
-	
+
 	// knight capture check
 	vector<Point> possibleKnightLoc;
 	possibleKnightLoc.push_back(Point(kwRow + 2, kwCol + 1));
@@ -320,6 +328,8 @@ bool Board::isInCheckWhite(Piece whiteKing, Board givenBoard) {
 	possibleKnightLoc.push_back(Point(kwRow - 1, kwCol - 2));
 
 	for (int i = 0; i < possibleKnightLoc.size(); i++) {
+		if (!checkBounds(possibleKnightLoc[i]))
+			continue;
 		int r = possibleKnightLoc[i].row;
 		int c = possibleKnightLoc[i].col;
 		if (board[r][c].returnType() == Type::KNIGHT && board[r][c].returnColor() == Color::BLACK) {
@@ -380,7 +390,7 @@ bool Board::isInCheckBlack(Piece blackKing, Board givenBoard) {
 			break;
 		}
 	}
-
+	
 	// leftward check
 	for (int c = kbCol; c >= 0; c--) {
 		Piece otherPiece = board[kbRow][c];
@@ -394,13 +404,16 @@ bool Board::isInCheckBlack(Piece blackKing, Board givenBoard) {
 			break;
 		}
 	}
-
+	
 	// southeast check
 	int tempCol = kbCol;
 	for (int r = kbRow; r < 8; r++) {
 		if (kbRow == r)
 			continue;
 		tempCol++;
+
+		if (!checkBounds(Point(r, tempCol)))
+			break;
 
 		Piece otherPiece = board[r][tempCol];
 		if (otherPiece.returnColor() == Color::BLACK)
@@ -419,13 +432,15 @@ bool Board::isInCheckBlack(Piece blackKing, Board givenBoard) {
 			break;
 		}
 	}
-
+	
 	// northeast check
 	tempCol = kbCol;
 	for (int r = kbRow; r >= 0; r--) {
 		if (kbRow == r)
 			continue;
 		tempCol++;
+		if (!checkBounds(Point(r, tempCol)))
+			break;
 
 		Piece otherPiece = board[r][tempCol];
 		if (otherPiece.returnColor() == Color::BLACK)
@@ -445,6 +460,8 @@ bool Board::isInCheckBlack(Piece blackKing, Board givenBoard) {
 		if (kbRow == r)
 			continue;
 		tempCol--;
+		if (!checkBounds(Point(r, tempCol)))
+			break;
 
 		Piece otherPiece = board[r][tempCol];
 		if (otherPiece.returnColor() == Color::BLACK)
@@ -470,6 +487,8 @@ bool Board::isInCheckBlack(Piece blackKing, Board givenBoard) {
 		if (kbRow == r)
 			continue;
 		tempCol--;
+		if (!checkBounds(Point(r, tempCol)))
+			break;
 
 		Piece otherPiece = board[r][tempCol];
 		if (otherPiece.returnColor() == Color::BLACK)
@@ -493,8 +512,10 @@ bool Board::isInCheckBlack(Piece blackKing, Board givenBoard) {
 	possibleKnightLoc.push_back(Point(kbRow - 2, kbCol - 1));
 	possibleKnightLoc.push_back(Point(kbRow - 1, kbCol + 2));
 	possibleKnightLoc.push_back(Point(kbRow - 1, kbCol - 2));
-
+	
 	for (int i = 0; i < possibleKnightLoc.size(); i++) {
+		if (!checkBounds(possibleKnightLoc[i]))
+			continue;
 		int r = possibleKnightLoc[i].row;
 		int c = possibleKnightLoc[i].col;
 		if (board[r][c].returnType() == Type::KNIGHT && board[r][c].returnColor() == Color::WHITE) {
@@ -541,6 +562,26 @@ bool Board::whiteInCheckmate(Piece whiteKing) {
 }
 
 
+Color Board::checkWinPrint() {
+	Color winner = checkWin();
+	if (winner == Color::WHITE) {
+		cout << "WHITE has won!";
+		return Color::WHITE;
+	}
+	else if (winner == Color::BLACK) {
+		cout << "BLACK has won!";
+		return Color::BLACK;
+	}
+	else if (winner == Color::CHECK_BLACK) {
+		cout << "BLACK in check!";
+	}
+	else if (winner == Color::CHECK_WHITE) {
+		cout << "WHITE in check!";
+	}
+	cout << endl;
+	return Color::EMPTY;
+}
+
 Color Board::checkWin() {
 
 	bool blackHasKing = false;
@@ -571,7 +612,7 @@ Color Board::checkWin() {
 	if (!whiteHasKing) {
 		return Color::BLACK;
 	}
-
+	
 	// check & checkmate functionality
 	isInCheckWhite(whiteKing, *this);
 	isInCheckBlack(blackKing, *this);
@@ -582,7 +623,7 @@ Color Board::checkWin() {
 			return Color::WHITE;
 		}
 		else {
-			return Color::CHECK;
+			return Color::CHECK_BLACK;
 		}
 	}
 
@@ -592,7 +633,7 @@ Color Board::checkWin() {
 			return Color::BLACK;
 		}
 		else {
-			return Color::CHECK;
+			return Color::CHECK_WHITE;
 		}
 	}
 

@@ -9,7 +9,6 @@
 using namespace std;
 
 
-
 void twoPlayer() {
 
 	BoardManager boardManager;
@@ -38,7 +37,9 @@ void twoPlayer() {
 		cout << res << endl;
 		board.printBoard();
 
-		// add logic to check if game is over
+		Color winner = board.checkWinPrint();
+		if (winner == Color::BLACK || winner == Color::WHITE)
+			break;
 
 		cout << "Player2, enter square with piece you are going to move." << endl;
 		cin >> startSquare;
@@ -52,7 +53,9 @@ void twoPlayer() {
 		cout << res << endl;
 		board.printBoard();
 
-		// add logic to check if game is over
+		winner = board.checkWinPrint();
+		if (winner == Color::BLACK || winner == Color::WHITE)
+			break;
 	}
 }
 
@@ -87,14 +90,18 @@ void onePlayer() {
 		board.printBoard();
 
 		//TODO: IF PLAYER DID NOT MAKE A VALID MOVE MAKE THEM MOVE AGAIN
-		// add logic to check if game is over
+		Color winner = board.checkWinPrint();
+		if (winner == Color::BLACK || winner == Color::WHITE)
+			break;
 
 		cout << "AI is making their move! Analyzing board..." << endl;
 		ai.makeMove(board, "black");
 		cout << "AI, has moved. " << endl;
 		board.printBoard();
 
-		// add logic to check if game is over
+		winner = board.checkWinPrint();
+		if (winner == Color::BLACK || winner == Color::WHITE)
+			break;
 	}
 }
 
@@ -120,9 +127,9 @@ void zeroplayer() {
 		cout << "AI, has moved. " << endl;
 		board.printBoard();
 
-
-		//TODO: IF PLAYER DID NOT MAKE A VALID MOVE MAKE THEM MOVE AGAIN
-		// add logic to check if game is over
+		Color winner = board.checkWinPrint();
+		if (winner == Color::BLACK || winner == Color::WHITE)
+			break;
 		
 		cin.ignore();
 		cout << "AI is making their move! Analyzing board..." << endl;
@@ -131,6 +138,9 @@ void zeroplayer() {
 		board.printBoard();
 
 		// add logic to check if game is over
+		winner = board.checkWinPrint();
+		if (winner == Color::BLACK || winner == Color::WHITE)
+			break;
 	}
 }
 

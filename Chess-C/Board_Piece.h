@@ -67,6 +67,7 @@ public:
 	Piece movePiece(Point startPt, Point endPt, Color playerColor);
 	Piece getPiece(int row, int col);
 	Color checkWin();
+	Color checkWinPrint();
 	bool isInCheckWhite(Piece whiteKing, Board givenBoard);
 	bool isInCheckBlack(Piece blackKing, Board givenBoard);
 	bool whiteInCheckmate(Piece whiteKing);

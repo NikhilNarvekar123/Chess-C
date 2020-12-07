@@ -18,9 +18,7 @@ void AI::makeMove(Board &board, string aiColor) {
 			maxMoveVal = val;
 			bestBoardState = boardStates[i];
 		}
-		cout << val << " ";
 	}
-	cout << maxMoveVal << endl;
 	board.setBoard(bestBoardState.returnBoard());
 }
 
