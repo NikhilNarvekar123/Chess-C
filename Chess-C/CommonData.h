@@ -12,7 +12,7 @@ struct Point {
 enum class Type { PAWN, ROOK, KNIGHT, BISHOP, KING, QUEEN, EMPTY };
 
 // Represent different colors of board
-enum class Color { BLACK, WHITE, EMPTY };
+enum class Color { BLACK, WHITE, EMPTY, CHECK };
 
 // Represent different states of a piece (primarily used for pawns)
 enum class Status { TAKEN, INGAME, SPAWN, EMPTY };

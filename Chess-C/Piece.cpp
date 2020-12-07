@@ -341,9 +341,9 @@ vector<Point> Piece::kingMovesGen(Board board) {
 	validMoves.push_back(Point(curRow, curCol + 1));
 	validMoves.push_back(Point(curRow, curCol - 1));
 	validMoves.push_back(Point(curRow + 1, curCol + 1));
-	validMoves.push_back(Point(curRow - 1, curCol + 2));
-	validMoves.push_back(Point(curRow + 1, curCol - 2));
-	validMoves.push_back(Point(curRow - 1, curCol - 2));
+	validMoves.push_back(Point(curRow - 1, curCol + 1));
+	validMoves.push_back(Point(curRow + 1, curCol - 1));
+	validMoves.push_back(Point(curRow - 1, curCol - 1));
 
 
 	for (int i = validMoves.size() - 1; i >= 0; i--) {

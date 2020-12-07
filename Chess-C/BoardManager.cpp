@@ -52,8 +52,8 @@ Point BoardManager::translateInput(string input) {
 void BoardManager::actionCheck(string& input) {
 
 	bool isValid;
-	regex format("[A-Z][1-8]");
-	regex format2("[a-z][1-8]");
+	regex format("[A-H][1-8]");
+	regex format2("[a-h][1-8]");
 	if (regex_match(input, format) || regex_match(input, format2))
 		isValid = true;
 	else

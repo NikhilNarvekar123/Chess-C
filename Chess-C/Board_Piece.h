@@ -67,7 +67,10 @@ public:
 	Piece movePiece(Point startPt, Point endPt, Color playerColor);
 	Piece getPiece(int row, int col);
 	Color checkWin();
-
+	bool isInCheckWhite(Piece whiteKing, Board givenBoard);
+	bool isInCheckBlack(Piece blackKing, Board givenBoard);
+	bool whiteInCheckmate(Piece whiteKing);
+	bool blackInCheckmate(Piece blackKing);
 	vector<vector<Piece>> returnBoard();
 
 	void setBoard(vector<vector<Piece>> board);
@@ -80,6 +83,10 @@ private:
 	// Labels to print out while board is being printed
 	vector<string> boardLabelsX = { "A","B", "C", "D", "E", "F","G","H" };
 	vector<string> boardLabelsY = { "8", "7", "6", "5", "4", "3", "2", "1" };
+
+	bool whiteInCheck;
+	bool blackInCheck;
+
 
 };
 

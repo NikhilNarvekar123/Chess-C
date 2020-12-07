@@ -22,7 +22,7 @@ public:
 	int returnValuation(Board board);
 
 private:
-	int runMinmax(Board loopboard, Color player, int curDepth, int maxDepth);
+	int runMinmax(Board loopboard, Color player, int curDepth, int maxDepth, int alpha, int beta);
 
 };
 

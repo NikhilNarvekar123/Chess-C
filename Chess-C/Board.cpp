@@ -4,6 +4,8 @@
 
 Board::Board() {
 	initBoard();
+	whiteInCheck = false;
+	blackInCheck = false;
 }
 
 vector<vector<Piece>> Board::returnBoard() {
@@ -156,27 +158,443 @@ Piece Board::getPiece(int row, int col) {
 	return Piece(-1);
 }
 
+bool Board::isInCheckWhite(Piece whiteKing, Board givenBoard) {
+
+	vector<vector<Piece>> board = givenBoard.returnBoard();
+	int kwRow = whiteKing.getLocation().row;
+	int kwCol = whiteKing.getLocation().col;
+	
+	// downward check
+	for (int r = kwRow; r < 8; r++) {
+		Piece otherPiece = board[r][kwCol];
+		if (otherPiece.returnColor() == Color::WHITE && kwRow != r)
+			break;
+		if (otherPiece.returnColor() == Color::BLACK) {
+			if (otherPiece.returnType() == Type::ROOK || otherPiece.returnType() == Type::QUEEN) {
+				whiteInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+	
+	// upward check
+	for (int r = kwRow; r >= 0; r--) {
+		Piece otherPiece = board[r][kwCol];
+		if (otherPiece.returnColor() == Color::WHITE && kwRow != r)
+			break;
+		if (otherPiece.returnColor() == Color::BLACK) {
+			if (otherPiece.returnType() == Type::ROOK || otherPiece.returnType() == Type::QUEEN) {
+				whiteInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// rightward check
+	for (int c = kwCol; c < 8; c++) {
+		Piece otherPiece = board[kwRow][c];
+		if (otherPiece.returnColor() == Color::WHITE && kwCol != c)
+			break;
+		if (otherPiece.returnColor() == Color::BLACK) {
+			if (otherPiece.returnType() == Type::ROOK || otherPiece.returnType() == Type::QUEEN) {
+				whiteInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// leftward check
+	for (int c = kwCol; c >= 0; c--) {
+		Piece otherPiece = board[kwRow][c];
+		if (otherPiece.returnColor() == Color::WHITE && kwCol != c)
+			break;
+		if (otherPiece.returnColor() == Color::BLACK) {
+			if (otherPiece.returnType() == Type::ROOK || otherPiece.returnType() == Type::QUEEN) {
+				whiteInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+	
+	// southeast check
+	int tempCol = kwCol;
+	for (int r = kwRow; r < 8; r++) {
+		if (kwRow == r)
+			continue;
+		tempCol++;
+
+		Piece otherPiece = board[r][tempCol];
+		if (otherPiece.returnColor() == Color::WHITE)
+			break;
+		if (otherPiece.returnColor() == Color::BLACK) {
+			if (otherPiece.returnType() == Type::QUEEN || otherPiece.returnType() == Type::BISHOP) {
+				whiteInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// northeast check
+	tempCol = kwCol;
+	for (int r = kwRow; r >= 0; r--) {
+		if (kwRow == r)
+			continue;
+		tempCol++;
+
+		Piece otherPiece = board[r][tempCol];
+		if (otherPiece.returnColor() == Color::WHITE)
+			break;
+		if (otherPiece.returnColor() == Color::BLACK) {
+			if (otherPiece.returnType() == Type::QUEEN || otherPiece.returnType() == Type::BISHOP) {
+				whiteInCheck = true;
+				return true;
+			}
+			if (otherPiece.returnType() == Type::PAWN) {
+				if (r == kwRow - 1) {
+					whiteInCheck = true;
+					return true;
+				}
+			}
+			break;
+		}
+	}
+
+	// southwest check
+	tempCol = kwCol;
+	for (int r = kwRow; r < 8; r++) {
+		if (kwRow == r)
+			continue;
+		tempCol--;
+
+		Piece otherPiece = board[r][tempCol];
+		if (otherPiece.returnColor() == Color::WHITE)
+			break;
+		if (otherPiece.returnColor() == Color::BLACK) {
+			if (otherPiece.returnType() == Type::QUEEN || otherPiece.returnType() == Type::BISHOP) {
+				whiteInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// northwest check
+	tempCol = kwCol;
+	for (int r = kwRow; r >= 0; r--) {
+		if (kwRow == r)
+			continue;
+		tempCol--;
+
+		Piece otherPiece = board[r][tempCol];
+		if (otherPiece.returnColor() == Color::WHITE)
+			break;
+		if (otherPiece.returnColor() == Color::BLACK) {
+			if (otherPiece.returnType() == Type::QUEEN || otherPiece.returnType() == Type::BISHOP) {
+				whiteInCheck = true;
+				return true;
+			}
+			if (otherPiece.returnType() == Type::PAWN) {
+				if (r == kwRow - 1) {
+					whiteInCheck = true;
+					return true;
+				}
+			}
+			break;
+		}
+	}
+	
+	// knight capture check
+	vector<Point> possibleKnightLoc;
+	possibleKnightLoc.push_back(Point(kwRow + 2, kwCol + 1));
+	possibleKnightLoc.push_back(Point(kwRow + 2, kwCol - 1));
+	possibleKnightLoc.push_back(Point(kwRow + 1, kwCol + 2));
+	possibleKnightLoc.push_back(Point(kwRow + 1, kwCol - 2));
+	possibleKnightLoc.push_back(Point(kwRow - 2, kwCol + 1));
+	possibleKnightLoc.push_back(Point(kwRow - 2, kwCol - 1));
+	possibleKnightLoc.push_back(Point(kwRow - 1, kwCol + 2));
+	possibleKnightLoc.push_back(Point(kwRow - 1, kwCol - 2));
+
+	for (int i = 0; i < possibleKnightLoc.size(); i++) {
+		int r = possibleKnightLoc[i].row;
+		int c = possibleKnightLoc[i].col;
+		if (board[r][c].returnType() == Type::KNIGHT && board[r][c].returnColor() == Color::BLACK) {
+			whiteInCheck = true;
+			return true;
+			break;
+		}
+	}
+
+	whiteInCheck = false;
+	return false;
+}
+
+bool Board::isInCheckBlack(Piece blackKing, Board givenBoard) {
+
+	vector<vector<Piece>> board = givenBoard.returnBoard();
+	int kbRow = blackKing.getLocation().row;
+	int kbCol = blackKing.getLocation().col;
+
+	// downward check
+	for (int r = kbRow; r < 8; r++) {
+		Piece otherPiece = board[r][kbCol];
+		if (otherPiece.returnColor() == Color::BLACK && kbRow != r)
+			break;
+		if (otherPiece.returnColor() == Color::WHITE) {
+			if (otherPiece.returnType() == Type::ROOK || otherPiece.returnType() == Type::QUEEN) {
+				blackInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// upward check
+	for (int r = kbRow; r >= 0; r--) {
+		Piece otherPiece = board[r][kbCol];
+		if (otherPiece.returnColor() == Color::BLACK && kbRow != r)
+			break;
+		if (otherPiece.returnColor() == Color::WHITE) {
+			if (otherPiece.returnType() == Type::ROOK || otherPiece.returnType() == Type::QUEEN) {
+				blackInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// rightward check
+	for (int c = kbCol; c < 8; c++) {
+		Piece otherPiece = board[kbRow][c];
+		if (otherPiece.returnColor() == Color::BLACK && kbCol != c)
+			break;
+		if (otherPiece.returnColor() == Color::WHITE) {
+			if (otherPiece.returnType() == Type::ROOK || otherPiece.returnType() == Type::QUEEN) {
+				blackInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// leftward check
+	for (int c = kbCol; c >= 0; c--) {
+		Piece otherPiece = board[kbRow][c];
+		if (otherPiece.returnColor() == Color::BLACK && kbCol != c)
+			break;
+		if (otherPiece.returnColor() == Color::WHITE) {
+			if (otherPiece.returnType() == Type::ROOK || otherPiece.returnType() == Type::QUEEN) {
+				blackInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// southeast check
+	int tempCol = kbCol;
+	for (int r = kbRow; r < 8; r++) {
+		if (kbRow == r)
+			continue;
+		tempCol++;
+
+		Piece otherPiece = board[r][tempCol];
+		if (otherPiece.returnColor() == Color::BLACK)
+			break;
+		if (otherPiece.returnColor() == Color::WHITE) {
+			if (otherPiece.returnType() == Type::QUEEN || otherPiece.returnType() == Type::BISHOP) {
+				blackInCheck = true;
+				return true;
+			}
+			if (otherPiece.returnType() == Type::PAWN) {
+				if (r == kbRow + 1) {
+					blackInCheck = true;
+					return true;
+				}
+			}
+			break;
+		}
+	}
+
+	// northeast check
+	tempCol = kbCol;
+	for (int r = kbRow; r >= 0; r--) {
+		if (kbRow == r)
+			continue;
+		tempCol++;
+
+		Piece otherPiece = board[r][tempCol];
+		if (otherPiece.returnColor() == Color::BLACK)
+			break;
+		if (otherPiece.returnColor() == Color::WHITE) {
+			if (otherPiece.returnType() == Type::QUEEN || otherPiece.returnType() == Type::BISHOP) {
+				blackInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// southwest check
+	tempCol = kbCol;
+	for (int r = kbRow; r < 8; r++) {
+		if (kbRow == r)
+			continue;
+		tempCol--;
+
+		Piece otherPiece = board[r][tempCol];
+		if (otherPiece.returnColor() == Color::BLACK)
+			break;
+		if (otherPiece.returnColor() == Color::WHITE) {
+			if (otherPiece.returnType() == Type::QUEEN || otherPiece.returnType() == Type::BISHOP) {
+				blackInCheck = true;
+				return true;
+			}
+			if (otherPiece.returnType() == Type::PAWN) {
+				if (r == kbRow + 1) {
+					blackInCheck = true;
+					return true;
+				}
+			}
+			break;
+		}
+	}
+
+	// northwest check
+	tempCol = kbCol;
+	for (int r = kbRow; r >= 0; r--) {
+		if (kbRow == r)
+			continue;
+		tempCol--;
+
+		Piece otherPiece = board[r][tempCol];
+		if (otherPiece.returnColor() == Color::BLACK)
+			break;
+		if (otherPiece.returnColor() == Color::WHITE) {
+			if (otherPiece.returnType() == Type::QUEEN || otherPiece.returnType() == Type::BISHOP) {
+				blackInCheck = true;
+				return true;
+			}
+			break;
+		}
+	}
+
+	// knight capture check
+	vector<Point> possibleKnightLoc;
+	possibleKnightLoc.push_back(Point(kbRow + 2, kbCol + 1));
+	possibleKnightLoc.push_back(Point(kbRow + 2, kbCol - 1));
+	possibleKnightLoc.push_back(Point(kbRow + 1, kbCol + 2));
+	possibleKnightLoc.push_back(Point(kbRow + 1, kbCol - 2));
+	possibleKnightLoc.push_back(Point(kbRow - 2, kbCol + 1));
+	possibleKnightLoc.push_back(Point(kbRow - 2, kbCol - 1));
+	possibleKnightLoc.push_back(Point(kbRow - 1, kbCol + 2));
+	possibleKnightLoc.push_back(Point(kbRow - 1, kbCol - 2));
+
+	for (int i = 0; i < possibleKnightLoc.size(); i++) {
+		int r = possibleKnightLoc[i].row;
+		int c = possibleKnightLoc[i].col;
+		if (board[r][c].returnType() == Type::KNIGHT && board[r][c].returnColor() == Color::WHITE) {
+			blackInCheck = true;
+			return true;
+			break;
+		}
+	}
+
+	blackInCheck = false;
+	return false;
+}
+
+bool Board::blackInCheckmate(Piece blackKing) {
+	
+	bool stillCheck = false;
+	vector<Point> kingMoves = blackKing.generateMoves(*this);
+	for (int i = 0; i < kingMoves.size(); i++) {
+		Board newBoard;
+		newBoard.setBoard(this->returnBoard());
+		newBoard.movePiece(blackKing.getLocation(), kingMoves[i], Color::BLACK);
+		stillCheck = isInCheckBlack(blackKing, newBoard);
+		if (stillCheck == false)
+			break;
+	}
+
+	return stillCheck;
+}
+
+bool Board::whiteInCheckmate(Piece whiteKing) {
+
+	bool stillCheck = false;
+	vector<Point> kingMoves = whiteKing.generateMoves(*this);
+	for (int i = 0; i < kingMoves.size(); i++) {
+		Board newBoard;
+		newBoard.setBoard(this->returnBoard());
+		newBoard.movePiece(whiteKing.getLocation(), kingMoves[i], Color::WHITE);
+		stillCheck = isInCheckBlack(whiteKing, newBoard);
+		if (stillCheck == false)
+			break;
+	}
+
+	return stillCheck;
+}
+
+
 Color Board::checkWin() {
 
 	bool blackHasKing = false;
 	bool whiteHasKing = false;
+	Piece blackKing;
+	Piece whiteKing;
 
 	for (int r = 0; r < 8; r++) {
 		for (int c = 0; c < 8; c++) {
-			if (curBoard[r][c].returnBoardName() == "kw")
+			if (curBoard[r][c].returnBoardName() == "kw") {
 				whiteHasKing = true;
-			if (curBoard[r][c].returnBoardName() == "kb")
+				whiteKing = curBoard[r][c];
+			}
+				
+			if (curBoard[r][c].returnBoardName() == "kb") {
 				blackHasKing = true;
+				blackKing = curBoard[r][c];
+			}
+			
+			if (blackHasKing && whiteHasKing)
+				break;
 		}
 	}
 
 	if (!blackHasKing) {
-		return Color::BLACK;
-	}
-	if (!whiteHasKing) {
 		return Color::WHITE;
 	}
+	if (!whiteHasKing) {
+		return Color::BLACK;
+	}
 
-	// checkmate functionality
+	// check & checkmate functionality
+	isInCheckWhite(whiteKing, *this);
+	isInCheckBlack(blackKing, *this);
+
+	if (blackInCheck) {
+		bool blackCheckmate = blackInCheckmate(blackKing);
+		if (blackCheckmate) {
+			return Color::WHITE;
+		}
+		else {
+			return Color::CHECK;
+		}
+	}
+
+	if (whiteInCheck) {
+		bool whiteCheckmate = whiteInCheckmate(whiteKing);
+		if (whiteCheckmate) {
+			return Color::BLACK;
+		}
+		else {
+			return Color::CHECK;
+		}
+	}
+
 	return Color::EMPTY;
 }
