@@ -1,19 +1,36 @@
 #pragma once
 #include "AI.h"
 
+// initializes AI to default difficulty 
+AI::AI() {
+	difficulty = 3;
+}
 
+// sets AI to given difficulty (2 -> easy, 3 -> regular, 4-> hard)
+void AI::setDifficulty(int diff) {
+	difficulty = diff;
+}
+
+/* given a board, the AI generates all possible moves for itself and then 
+   calls the minmax function on each board with each possible move made. Returns
+   the highest valued board out of them all.
+*/
 void AI::makeMove(Board &board, string aiColor) {
 
+	// set AI and opponent color
 	Color color = (aiColor == "black") ? Color::BLACK : Color::WHITE;
 	Color otherColor = (aiColor == "black") ? Color::WHITE : Color::BLACK;
 
+	// find all possible moves AI can make
 	vector<Board> boardStates;
 	boardStates = generateMoves(board, color);
 
+	// simulate making each move and then call on minmax function for each simulated move
+	// move with the highest
 	int maxMoveVal = INT_MIN;
 	Board bestBoardState;
 	for (int i = 0; i < boardStates.size(); i++) {
-		int val = runMinmax(boardStates[i], otherColor, 1, 3, INT_MIN, INT_MAX);
+		int val = runMinmax(boardStates[i], otherColor, 1, difficulty, INT_MIN, INT_MAX);
 		if (val > maxMoveVal) {
 			maxMoveVal = val;
 			bestBoardState = boardStates[i];
@@ -63,7 +80,7 @@ int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth, int
 
 		int maxMoveVal = INT_MIN;
 		for (int i = 0; i < boardStates.size(); i++) {
-			int val = runMinmax(boardStates[i], Color::WHITE, curDepth + 1, 3, alpha, beta);
+			int val = runMinmax(boardStates[i], Color::WHITE, curDepth + 1, difficulty, alpha, beta);
 			maxMoveVal = max(val, maxMoveVal);
 			alpha = max(alpha, maxMoveVal);
 			if(beta <= alpha)
@@ -79,7 +96,7 @@ int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth, int
 
 		int minMoveVal = INT_MAX;
 		for (int i = 0; i < boardStates.size(); i++) {
-			int val = runMinmax(boardStates[i], Color::BLACK, curDepth + 1, 3, alpha, beta);
+			int val = runMinmax(boardStates[i], Color::BLACK, curDepth + 1, difficulty, alpha, beta);
 			minMoveVal = min(val, minMoveVal);
 			beta = min(beta, minMoveVal);
 			if(beta <= alpha)

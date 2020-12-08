@@ -149,7 +149,6 @@
     <ClInclude Include="AI.h" />
     <ClInclude Include="Board_Piece.h" />
     <ClInclude Include="BoardManager.h" />
-    <ClInclude Include="Piece.h" />
     <ClInclude Include="CommonData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

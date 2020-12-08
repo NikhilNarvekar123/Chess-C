@@ -85,7 +85,6 @@ void onePlayer() {
 	Board board;
 	BoardManager boardManager;
 	AI ai;
-
 	string userIn;
 	string startSquare;
 	string endSquare;
@@ -94,7 +93,31 @@ void onePlayer() {
 	cout << "you will play as white while the AI plays as black." << endl;
 	cout << "for example, to move the piece at A1 to B2, you would type:\n";
 	cout << "A1 B2" << endl;
-	cout << "enter 'exit' to leave the mode" << endl << endl;
+	cout << "enter 'exit' to leave the mode" << endl;
+	
+	cout << "what's your AI difficulty? ('e' = easy, 'r' = regular, 'h' = hard)" << endl;
+	bool valid = false;
+	while (!valid) {
+		cin >> userIn;
+		char c = tolower(userIn.at(0));
+		if (userIn.size() == 1 && (c == 'e' || c == 'r' || c == 'h')) {
+			cout << "Board display option " << c << " chosen!\n" << endl;
+			userIn = c;
+			valid = true;
+		}
+		else {
+			cout << "invalid input entered! try again." << endl;
+		}
+	}
+	if (userIn == "e")
+		ai.setDifficulty(2);
+	else if (userIn == "h")
+		ai.setDifficulty(4);
+	else
+		ai.setDifficulty(3);
+
+	cout << endl;
+
 	board.printBoard();
 
 	while (userIn != "exit") {

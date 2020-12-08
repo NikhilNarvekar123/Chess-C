@@ -1,11 +1,9 @@
 #include "BoardManager.h"
 
+// default constructor
+BoardManager::BoardManager() {}
 
-BoardManager::BoardManager() {
-	player1Score = 0;
-	player2Score = 0;
-}
-
+// makes sure player input is correct and passes move to board class to make
 string BoardManager::makeMove(string userStartPt, string userEndPt, string playerColor, Board &board) {
 
 	Color color = (playerColor == "black") ? Color::BLACK : Color::WHITE;
@@ -17,12 +15,11 @@ string BoardManager::makeMove(string userStartPt, string userEndPt, string playe
 	Piece endPiece = board.getPiece(endPt.row, endPt.col);
 	Piece moveResult = board.movePiece(startPt, endPt, color);
 
+	// depending on whether move was valid or not
 	if (!moveResult.isValid())
 		return "Invalid move! Turn skipped.";
-	
 	if (moveResult.getType() == Type::EMPTY)
 		return startPiece.getName() + " moved!";
-	
 	if(moveResult.getType() != Type::EMPTY)
 		return startPiece.getName() + " takes " + endPiece.getName() + "!";
 }

@@ -32,9 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Piece.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AI.h">
       <Filter>Header Files</Filter>
     </ClInclude>

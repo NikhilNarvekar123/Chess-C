@@ -1,6 +1,8 @@
 #pragma once
 
-// Represents a point on the board (valid point used to indicate if point is within 8X8 grid)
+/* common data across the AI, Board Manager, and Board classes */
+
+// Represents a point on the board
 struct Point {
 	int row;
 	int col;
