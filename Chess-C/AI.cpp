@@ -1,7 +1,7 @@
 #pragma once
 #include "AI.h"
 
-// initializes AI to default difficulty 
+// initializes AI to default difficulty
 AI::AI() {
 	difficulty = 3;
 }
@@ -11,7 +11,7 @@ void AI::setDifficulty(int diff) {
 	difficulty = diff;
 }
 
-/* given a board, the AI generates all possible moves for itself and then 
+/* given a board, the AI generates all possible moves for itself and then
    calls the minmax function on each board with each possible move made. Returns
    the highest valued board out of them all.
 */
@@ -39,7 +39,8 @@ void AI::makeMove(Board &board, string aiColor) {
 	board.setBoard(bestBoardState.returnBoard());
 }
 
-
+/* Generates all moves for a certain color given a specific board state
+*/
 vector<Board> AI::generateMoves(Board board, Color color) {
 
 	vector<Board> boardStates;
@@ -63,16 +64,17 @@ vector<Board> AI::generateMoves(Board board, Color color) {
 	return boardStates;
 }
 
-
+/* Recursively evaluates all AI / optimal player moves until either win-state is reached
+   or max tree depth is reached
+*/
 int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth, int alpha, int beta) {
 
-	if (curDepth == maxDepth) {
+	if (curDepth == maxDepth)
 		return returnValuation(loopboard);
-	}
-	if (loopboard.checkWin() != Color::EMPTY) {
+	if (loopboard.checkWin() != Color::EMPTY)
 		return returnValuation(loopboard);
-	}
 
+	// AI (maximizing agent) turn
 	if (player == Color::BLACK) {
 
 		vector<Board> boardStates;
@@ -89,6 +91,7 @@ int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth, int
 		return maxMoveVal;
 
 	}
+	// Player-AI (minimizing agent) turn
 	else if (player == Color::WHITE) {
 
 		vector<Board> boardStates;
@@ -105,10 +108,11 @@ int AI::runMinmax(Board loopboard, Color player, int curDepth, int maxDepth, int
 
 		return minMoveVal;
 	}
-
 }
 
-
+/* Returns the value of a given board state (positive indicates better for AI,
+   negative indicates better for player)
+*/
 int AI::returnValuation(Board board) {
 
 	int blackCount = 0;
