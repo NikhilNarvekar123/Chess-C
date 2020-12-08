@@ -9,7 +9,6 @@
 using namespace std;
 
 class Board;
-class Piece;
 
 class Piece {
 
@@ -53,7 +52,8 @@ class Board {
 public:
 	Board();
 	void initBoard();
-	void printBoard();
+	void printBoard(string boardType = "t");
+	void printBoardFormat();
 	void setBoard(vector<vector<Piece>> board);
 	vector<vector<Piece>> returnBoard();
 	bool checkBounds(Point p);

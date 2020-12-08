@@ -31,7 +31,7 @@ vector<Board> AI::generateMoves(Board board, Color color) {
 		for (int c = 0; c < 8; c++) {
 			Piece piece = board.getPiece(r, c);
 
-			if (piece.returnColor() == color) {
+			if (piece.getColor() == color) {
 				vector<Point> pieceMoves = piece.generateMoves(board);
 				for (Point pieceMove : pieceMoves) {
 					Board newBoard;
@@ -100,10 +100,10 @@ int AI::returnValuation(Board board) {
 	for (int r = 0; r < 8; r++) {
 		for (int c = 0; c < 8; c++) {
 			Piece curPiece = board.getPiece(r,c);
-			if(curPiece.returnColor() == Color::WHITE)
-				whiteCount += curPiece.returnValuation();
+			if(curPiece.getColor() == Color::WHITE)
+				whiteCount += curPiece.getValue();
 			else
-				blackCount += curPiece.returnValuation();
+				blackCount += curPiece.getValue();
 		}
 	}
 

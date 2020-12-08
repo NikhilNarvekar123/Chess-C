@@ -165,8 +165,8 @@ vector<Point> Piece::rookMovesGen(Board board) {
 	// downward moves
 	for (int r = curRow + 1; r < 8; r++) {
 		Piece otherPiece = board.getPiece(r, curCol);
-		if (otherPiece.returnType() != Type::EMPTY) {
-			if (otherPiece.returnColor() != color) {
+		if (otherPiece.getType() != Type::EMPTY) {
+			if (otherPiece.getColor() != color) {
 				validMoves.push_back(Point(r, curCol));
 			}
 			break;
@@ -179,8 +179,8 @@ vector<Point> Piece::rookMovesGen(Board board) {
 	// upward moves
 	for (int r = curRow - 1; r >= 0; r--) {
 		Piece otherPiece = board.getPiece(r, curCol);
-		if (otherPiece.returnType() != Type::EMPTY) {
-			if (otherPiece.returnColor() != color) {
+		if (otherPiece.getType() != Type::EMPTY) {
+			if (otherPiece.getColor() != color) {
 				validMoves.push_back(Point(r, curCol));
 			}
 			break;
@@ -193,8 +193,8 @@ vector<Point> Piece::rookMovesGen(Board board) {
 	// rightward moves
 	for (int c = curCol + 1; c < 8; c++) {
 		Piece otherPiece = board.getPiece(curRow, c);
-		if (otherPiece.returnType() != Type::EMPTY) {
-			if (otherPiece.returnColor() != color) {
+		if (otherPiece.getType() != Type::EMPTY) {
+			if (otherPiece.getColor() != color) {
 				validMoves.push_back(Point(curRow, c));
 			}
 			break;
@@ -207,8 +207,8 @@ vector<Point> Piece::rookMovesGen(Board board) {
 	// leftward moves
 	for (int c = curCol - 1; c >= 0; c--) {
 		Piece otherPiece = board.getPiece(curRow, c);
-		if (otherPiece.returnType() != Type::EMPTY) {
-			if (otherPiece.returnColor() != color) {
+		if (otherPiece.getType() != Type::EMPTY) {
+			if (otherPiece.getColor() != color) {
 				validMoves.push_back(Point(curRow, c));
 			}
 			break;
@@ -242,7 +242,7 @@ vector<Point> Piece::knightMovesGen(Board board) {
 	for (int i = validMoves.size() - 1; i >= 0; i--) {
 		if (!board.checkBounds(validMoves[i]))
 			validMoves.erase(validMoves.begin() + i);
-		else if (board.getPiece(validMoves[i].row, validMoves[i].col).returnColor() == color)
+		else if (board.getPiece(validMoves[i].row, validMoves[i].col).getColor() == color)
 			validMoves.erase(validMoves.begin() + i);
 	}
 
@@ -267,8 +267,8 @@ vector<Point> Piece::bishopMovesGen(Board board) {
 
 		Piece otherPiece = board.getPiece(r, tempCol);
 
-		if (otherPiece.returnType() != Type::EMPTY) {
-			if (otherPiece.returnColor() != color) {
+		if (otherPiece.getType() != Type::EMPTY) {
+			if (otherPiece.getColor() != color) {
 				validMoves.push_back(Point(r, tempCol));
 			}
 			break;
@@ -287,8 +287,8 @@ vector<Point> Piece::bishopMovesGen(Board board) {
 
 		Piece otherPiece = board.getPiece(r, tempCol);
 
-		if (otherPiece.returnType() != Type::EMPTY) {
-			if (otherPiece.returnColor() != color) {
+		if (otherPiece.getType() != Type::EMPTY) {
+			if (otherPiece.getColor() != color) {
 				validMoves.push_back(Point(r, tempCol));
 			}
 			break;
@@ -307,8 +307,8 @@ vector<Point> Piece::bishopMovesGen(Board board) {
 
 		Piece otherPiece = board.getPiece(r, tempCol);
 
-		if (otherPiece.returnType() != Type::EMPTY) {
-			if (otherPiece.returnColor() != color) {
+		if (otherPiece.getType() != Type::EMPTY) {
+			if (otherPiece.getColor() != color) {
 				validMoves.push_back(Point(r, tempCol));
 			}
 			break;
@@ -327,8 +327,8 @@ vector<Point> Piece::bishopMovesGen(Board board) {
 
 		Piece otherPiece = board.getPiece(r, tempCol);
 
-		if (otherPiece.returnType() != Type::EMPTY) {
-			if (otherPiece.returnColor() != color) {
+		if (otherPiece.getType() != Type::EMPTY) {
+			if (otherPiece.getColor() != color) {
 				validMoves.push_back(Point(r, tempCol));
 			}
 			break;
@@ -362,7 +362,7 @@ vector<Point> Piece::kingMovesGen(Board board) {
 	for (int i = validMoves.size() - 1; i >= 0; i--) {
 		if (!board.checkBounds(validMoves[i]))
 			validMoves.erase(validMoves.begin() + i);
-		else if (board.getPiece(validMoves[i].row, validMoves[i].col).returnColor() == color)
+		else if (board.getPiece(validMoves[i].row, validMoves[i].col).getColor() == color)
 			validMoves.erase(validMoves.begin() + i);
 	}
 
@@ -400,24 +400,24 @@ vector<Point> Piece::pawnMovesGen(Board board) {
 
 		// capturing southeastern piece
 		if (board.checkBounds(Point(curRow + 1, curCol + 1))) {
-			if (board.getPiece(curRow + 1, curCol + 1).returnColor() == Color::WHITE)
+			if (board.getPiece(curRow + 1, curCol + 1).getColor() == Color::WHITE)
 				validMoves.push_back(Point(curRow + 1, curCol + 1));
 		}
 
 		// capturing southwestern piece
 		if (board.checkBounds(Point(curRow + 1, curCol - 1))) {
-			if (board.getPiece(curRow + 1, curCol - 1).returnColor() == Color::WHITE)
+			if (board.getPiece(curRow + 1, curCol - 1).getColor() == Color::WHITE)
 				validMoves.push_back(Point(curRow + 1, curCol - 1));
 		}
 
 		// checking one & two spaces down
 		if (board.checkBounds(Point(curRow + 1, curCol))) {
-			if (board.getPiece(curRow + 1, curCol).returnType() == Type::EMPTY) {
+			if (board.getPiece(curRow + 1, curCol).getType() == Type::EMPTY) {
 				validMoves.push_back(Point(curRow + 1, curCol));
 
 				// only if pawn is in spawn
 				if (board.checkBounds(Point(curRow + 2, curCol))) {
-					if (status == Status::SPAWN && board.getPiece(curRow + 2, curCol).returnType() == Type::EMPTY) {
+					if (status == Status::SPAWN && board.getPiece(curRow + 2, curCol).getType() == Type::EMPTY) {
 						validMoves.push_back(Point(curRow + 2, curCol));
 					}
 				}
@@ -429,24 +429,24 @@ vector<Point> Piece::pawnMovesGen(Board board) {
 
 		// capturing northeastern piece
 		if (board.checkBounds(Point(curRow - 1, curCol + 1))) {
-			if (board.getPiece(curRow - 1, curCol + 1).returnColor() == Color::BLACK)
+			if (board.getPiece(curRow - 1, curCol + 1).getColor() == Color::BLACK)
 				validMoves.push_back(Point(curRow - 1, curCol + 1));
 		}
 
 		// capturing northwestern piece
 		if (board.checkBounds(Point(curRow - 1, curCol - 1))) {
-			if (board.getPiece(curRow - 1, curCol - 1).returnColor() == Color::BLACK)
+			if (board.getPiece(curRow - 1, curCol - 1).getColor() == Color::BLACK)
 				validMoves.push_back(Point(curRow - 1, curCol - 1));
 		}
 
 		// checking one & two spaces ahead
 		if (board.checkBounds(Point(curRow - 1, curCol))) {
-			if (board.getPiece(curRow - 1, curCol).returnType() == Type::EMPTY) {
+			if (board.getPiece(curRow - 1, curCol).getType() == Type::EMPTY) {
 				validMoves.push_back(Point(curRow - 1, curCol));
 
 				// if pawn is in spawn, check two spaces ahead
 				if (board.checkBounds(Point(curRow - 2, curCol))) {
-					if (this->status == Status::SPAWN && board.getPiece(curRow - 2, curCol).returnType() == Type::EMPTY) {
+					if (this->status == Status::SPAWN && board.getPiece(curRow - 2, curCol).getType() == Type::EMPTY) {
 						validMoves.push_back(Point(curRow - 2, curCol));
 					}
 				}

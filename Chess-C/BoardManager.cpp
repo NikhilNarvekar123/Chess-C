@@ -20,11 +20,11 @@ string BoardManager::makeMove(string userStartPt, string userEndPt, string playe
 	if (!moveResult.isValid())
 		return "Invalid move! Turn skipped.";
 	
-	if (moveResult.returnType() == Type::EMPTY)
-		return startPiece.returnName() + " moved!";
+	if (moveResult.getType() == Type::EMPTY)
+		return startPiece.getName() + " moved!";
 	
-	if(moveResult.returnType() != Type::EMPTY)
-		return startPiece.returnName() + " takes " + endPiece.returnName() + "!";
+	if(moveResult.getType() != Type::EMPTY)
+		return startPiece.getName() + " takes " + endPiece.getName() + "!";
 }
 
 // Translates user input from 'A1' to actual board position
